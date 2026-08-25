@@ -1,0 +1,70 @@
+---
+import DocumentLayout from '../layouts/DocumentLayout.astro';
+import { withBase } from '../lib/url';
+import { BADGES } from '../data/badges';
+---
+
+<DocumentLayout title="Links" kicker="Blogroll">
+  <p>Places elsewhere on the internet, and some badges to prove it.</p>
+
+  <ul class="links-list">
+    <li>
+      <a href="https://github.com/devon-23" target="_blank" rel="noopener noreferrer">github.com/devon-23</a> — where the code for this site (and everything else) lives.
+    </li>
+    <li>
+      <a href="https://www.last.fm/user/devonbarks" target="_blank" rel="noopener noreferrer">last.fm/user/devonbarks</a> — the account the Music window is actually reading from.
+    </li>
+    <li>
+      <a href="https://github.com/devon-23/Spinning" target="_blank" rel="noopener noreferrer">Spinning</a> — the original Last.fm project this site's Music window was built from.
+    </li>
+  </ul>
+
+  <p class="badge-heading">Badges</p>
+  <div class="badge-strip">
+    {
+      BADGES.map((badge) =>
+        badge.href ? (
+          <a href={badge.href} target="_blank" rel="noopener noreferrer">
+            <img src={withBase(badge.src)} alt={badge.alt} width="88" height="31" />
+          </a>
+        ) : (
+          <img src={withBase(badge.src)} alt={badge.alt} width="88" height="31" />
+        )
+      )
+    }
+  </div>
+</DocumentLayout>
+
+<style>
+  .links-list {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+  }
+
+  .links-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .badge-heading {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #555;
+    border-top: 1px solid #ccc;
+    padding-top: 14px;
+  }
+
+  .badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .badge-strip img {
+    image-rendering: pixelated;
+    display: block;
+  }
+</style>

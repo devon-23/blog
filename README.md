@@ -27,6 +27,13 @@ commit. Nothing on this site is ever deleted, only added to.
 | `npm run new:month`           | Draw this month's random goals                   |
 | `npm run log:goal`            | Attach a photos/rating/writeup log to a goal      |
 
+## A few early-2000s flourishes
+
+- **Search** (Search icon / `/pagefind/`) — static full-text search over every page, via [Pagefind](https://pagefind.app). Only works after a real build (`npm run build`, which indexes `dist/` in a `postbuild` step) — it won't find anything under plain `npm run dev`.
+- **Links page** (`/links/`) — a classic blogroll with 88x31 pixel web badges (`public/badges/`, listed in `src/data/badges.ts`).
+- **Display Properties** — right-click the desktop background → Properties to switch wallpaper (Teal / Clouds / Maze); the choice is remembered per-visitor via `localStorage`.
+- A cursor trail, because it's 2003.
+
 ## Project structure
 
 - `src/content/posts/` — articles, think pieces, and updates (Markdown + frontmatter)

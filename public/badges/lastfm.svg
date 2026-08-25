@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 31">
+  <rect width="88" height="31" fill="#bf5230" stroke="#000" stroke-width="1"/>
+  <circle cx="15" cy="15.5" r="7" fill="#1c150f"/>
+  <circle cx="15" cy="15.5" r="2.5" fill="#f3e6d2"/>
+  <text x="26" y="14" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="bold" fill="#fff">SPINNING</text>
+  <text x="26" y="24" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#f3e6d2">on Last.fm</text>
+</svg>

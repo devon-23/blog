@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 31">
+  <rect width="88" height="31" fill="#1084d0" stroke="#000" stroke-width="1"/>
+  <path d="M14 22l4.5-14h3L26 22h-2.7l-1-3.2h-4.6l-1 3.2H14zm4.5-5.3h3.2l-1.6-5.4-1.6 5.4z" fill="#fff"/>
+  <text x="30" y="14" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#fff">MADE WITH</text>
+  <text x="30" y="24" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#fff">ASTRO</text>
+</svg>

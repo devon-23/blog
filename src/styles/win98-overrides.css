@@ -7,6 +7,29 @@
   overflow: hidden;
 }
 
+.desktop[data-wallpaper='teal'] {
+  background: #008080;
+}
+
+.desktop[data-wallpaper='clouds'] {
+  background-color: #6fa8dc;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0 18px, transparent 19px),
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.9) 0 24px, transparent 25px),
+    radial-gradient(circle at 55% 35%, rgba(255, 255, 255, 0.85) 0 16px, transparent 17px),
+    radial-gradient(circle at 75% 20%, rgba(255, 255, 255, 0.9) 0 20px, transparent 21px),
+    radial-gradient(circle at 90% 40%, rgba(255, 255, 255, 0.8) 0 14px, transparent 15px);
+  background-repeat: repeat;
+  background-size: 220px 160px;
+}
+
+.desktop[data-wallpaper='maze'] {
+  background-color: #003300;
+  background-image:
+    repeating-linear-gradient(45deg, #005500 0 4px, transparent 4px 26px),
+    repeating-linear-gradient(-45deg, #005500 0 4px, transparent 4px 26px);
+}
+
 .desktop-icons {
   position: absolute;
   inset: 0;
@@ -993,6 +1016,221 @@
   font-size: 11px;
 }
 
+/* ============ Desktop context menu & Display Properties ============ */
+
+.context-menu-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+}
+
+.desktop-context-menu {
+  position: fixed;
+  z-index: 10021;
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+  min-width: 140px;
+  background: silver;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #dfdfdf,
+    inset -2px -2px grey,
+    inset 2px 2px #fff;
+}
+
+.desktop-context-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  box-shadow: none;
+  min-width: 0;
+  min-height: 0;
+  padding: 5px 10px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  color: #000;
+  text-shadow: none;
+}
+
+.desktop-context-menu button:hover {
+  background: navy;
+  color: #fff;
+}
+
+.display-props-dialog {
+  width: 320px;
+}
+
+.display-props-dialog .window-body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.display-props-label {
+  font-weight: bold;
+  margin: 0 0 10px;
+}
+
+.wallpaper-swatches {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.wallpaper-swatch {
+  width: 84px;
+  height: 60px;
+  border: 2px solid #808080;
+  box-shadow: none;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.wallpaper-swatch span {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 4px;
+  margin-bottom: 3px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+}
+
+.wallpaper-swatch.selected {
+  border-color: #000080;
+  outline: 1px dotted #000;
+}
+
+.wallpaper-swatch-teal {
+  background: #008080;
+}
+
+.wallpaper-swatch-clouds {
+  background-color: #6fa8dc;
+  background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0 8px, transparent 9px),
+    radial-gradient(circle at 65% 45%, rgba(255, 255, 255, 0.9) 0 10px, transparent 11px);
+}
+
+.wallpaper-swatch-maze {
+  background-color: #003300;
+  background-image:
+    repeating-linear-gradient(45deg, #005500 0 2px, transparent 2px 10px),
+    repeating-linear-gradient(-45deg, #005500 0 2px, transparent 2px 10px);
+}
+
+.display-props-ok {
+  display: block;
+  margin-left: auto;
+}
+
+/* ============ Desktop badge strip ============ */
+
+.desktop-badge-strip {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1;
+}
+
+.desktop-badge-strip img {
+  image-rendering: pixelated;
+  display: block;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ============ Cursor trail ============ */
+
+.cursor-trail-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999999;
+  overflow: hidden;
+}
+
+.cursor-trail-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.6s linear,
+    transform 0.6s ease-out;
+}
+
+.cursor-trail-dot.fade {
+  opacity: 0;
+  transform: scale(0.3) translateY(10px);
+}
+
+/* ============ Search & Links apps ============ */
+
+.app-search {
+  padding: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.app-search-bar {
+  margin-bottom: 10px;
+}
+
+.app-search-bar input {
+  width: 100%;
+}
+
+.app-search .app-list-summary mark {
+  background: #ffe999;
+  padding: 0 1px;
+}
+
+.app-links {
+  padding: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.app-links-list {
+  list-style: none;
+  margin: 10px 0 16px;
+  padding: 0;
+}
+
+.app-links-list li {
+  padding: 4px 0;
+}
+
+.app-links .badge-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.app-links .badge-strip img {
+  image-rendering: pixelated;
+  display: block;
+}
+
+.app-links-full {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+}
+
 /* ============ Responsive ============ */
 
 @media (max-width: 720px) {
@@ -1014,5 +1252,9 @@
 
   .desktop-icons {
     gap: 0;
+  }
+
+  .desktop-badge-strip {
+    display: none;
   }
 }

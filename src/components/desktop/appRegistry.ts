@@ -14,5 +14,7 @@ export const APPS: AppMeta[] = [
   { id: 'recommendations', title: 'Recommendations', icon: 'recommendations.svg', width: 520, height: 520 },
   { id: 'goals', title: 'Goals', icon: 'goals.svg', width: 400, height: 380 },
   { id: 'history', title: 'History', icon: 'history.svg', width: 420, height: 460 },
+  { id: 'search', title: 'Search', icon: 'search.svg', width: 460, height: 440 },
+  { id: 'links', title: 'Links', icon: 'links.svg', width: 460, height: 380 },
   { id: 'about', title: 'About Me', icon: 'about.svg', width: 420, height: 360 },
 ];
