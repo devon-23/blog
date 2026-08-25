@@ -18,3 +18,7 @@ export function recommendationHref(rec: RecommendationEntry): string {
 export function recapHref(monthKey: string): string {
   return withBase(`/recap/${monthKey}/`);
 }
+
+export function goalLogHref(slug: string): string {
+  return withBase(`/goals/${slug}/`);
+}

@@ -25,6 +25,7 @@ commit. Nothing on this site is ever deleted, only added to.
 | `npm run new:post`            | Scaffold a new article / think piece / update    |
 | `npm run new:recommendation`  | Scaffold a new recommendation                    |
 | `npm run new:month`           | Draw this month's random goals                   |
+| `npm run log:goal`            | Attach a photos/rating/writeup log to a goal      |
 
 ## Project structure
 

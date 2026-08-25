@@ -19,22 +19,21 @@ export interface DesktopRecommendation {
   href: string;
 }
 
+export interface DesktopGoal {
+  text: string;
+  done: boolean;
+  logHref?: string;
+}
+
 export interface DesktopMonth {
   key: string;
   label: string;
   href: string;
-}
-
-export interface DesktopGoal {
-  text: string;
-  done: boolean;
+  goals: DesktopGoal[] | null;
 }
 
 export interface DesktopData {
   posts: DesktopPost[];
   recommendations: DesktopRecommendation[];
   months: DesktopMonth[];
-  currentMonthLabel: string;
-  currentMonthHref: string;
-  currentGoals: DesktopGoal[] | null;
 }

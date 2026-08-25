@@ -31,7 +31,7 @@ export default function Desktop({ data }: Props) {
       case 'recommendations':
         return <RecommendationsApp recommendations={data.recommendations} />;
       case 'goals':
-        return <GoalsApp monthLabel={data.currentMonthLabel} monthHref={data.currentMonthHref} goals={data.currentGoals} />;
+        return <GoalsApp months={data.months} />;
       case 'history':
         return <HistoryApp months={data.months} />;
       case 'about':

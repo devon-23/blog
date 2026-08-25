@@ -3,7 +3,7 @@ import DocumentLayout from '../../layouts/DocumentLayout.astro';
 import PostCard from '../../components/shared/PostCard.astro';
 import RecommendationCard from '../../components/shared/RecommendationCard.astro';
 import { getAllMonthKeys, getMonthRecap } from '../../lib/recap';
-import { recapHref } from '../../lib/paths';
+import { recapHref, goalLogHref } from '../../lib/paths';
 import { withBase } from '../../lib/url';
 
 export async function getStaticPaths() {
@@ -47,6 +47,13 @@ const totalItems = recap.posts.length + recap.recommendations.length;
           {recap.goals.data.goals.map((goal) => (
             <li class={goal.done ? 'goal-done' : ''}>
               <span class="goal-check">{goal.done ? '☑' : '☐'}</span> {goal.text}
+              {goal.logSlug ? (
+                <a class="goal-log-link" href={goalLogHref(goal.logSlug)}>
+                  photos &amp; notes &rarr;
+                </a>
+              ) : (
+                <span class="goal-log-hint"> (no log yet)</span>
+              )}
             </li>
           ))}
         </ul>

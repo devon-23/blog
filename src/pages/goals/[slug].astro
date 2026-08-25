@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import { formatDate } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const logs = await getCollection('goalLogs', ({ data }) => !data.draft);
+  return logs.map((log) => ({
+    params: { slug: log.id },
+    props: { log },
+  }));
+}
+
+const { log } = Astro.props;
+const { Content } = await render(log);
+---
+
+<DocumentLayout
+  title={log.data.title}
+  description={`${log.data.goalText} — ${log.data.title}`}
+  kicker="Goal log"
+  statusLeft={formatDate(log.data.date)}
+  statusRight={log.data.rating ? '★'.repeat(log.data.rating) + '☆'.repeat(5 - log.data.rating) : undefined}
+>
+  <p class="goal-log-source">Goal: {log.data.goalText}</p>
+  {log.data.coverImage && <img class="goal-log-cover" src={log.data.coverImage.src} alt="" />}
+  <Content />
+</DocumentLayout>
+
+<style>
+  .goal-log-source {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #555;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+
+  .goal-log-cover {
+    display: block;
+    max-width: 100%;
+    border: 1px solid #999;
+    margin-bottom: 16px;
+  }
+</style>

@@ -37,6 +37,9 @@ const goals = defineCollection({
         text: z.string(),
         done: z.boolean().default(false),
         category: z.string().optional(),
+        // Slug of a src/content/goal-logs/*.md entry with photos/rating/notes
+        // for this goal, if one has been logged (see `npm run log:goal`).
+        logSlug: z.string().optional(),
       })
     ),
     generatedAt: z.coerce.date().optional(),
@@ -44,4 +47,20 @@ const goals = defineCollection({
   }),
 });
 
-export const collections = { posts, recommendations, goals };
+// A photos/rating/writeup entry for a single completed (or in-progress) goal,
+// linked back to it via goals[].logSlug in the matching month's goals file.
+const goalLogs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/goal-logs' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      goalText: z.string(),
+      month: z.string().regex(/^\d{4}-\d{2}$/),
+      date: z.coerce.date(),
+      rating: z.number().min(1).max(5).optional(),
+      coverImage: image().optional(),
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { posts, recommendations, goals, goalLogs };

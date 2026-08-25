@@ -60,6 +60,24 @@ array of strings. Add your own real goal ideas to it any time; removing an
 entry only stops it from being drawn again, it doesn't affect any month that
 already drew it.
 
+## Logging a goal (photos, rating, notes)
+
+```sh
+npm run log:goal
+```
+
+Pick which goal (from the current month, or `-- --month 2026-09` for another
+one), give the log entry a title, an optional 1-5 rating, and say whether to
+mark the goal done. This creates
+`src/content/goal-logs/YYYY-MM-DD-your-title.md` and links it from that goal
+— it'll show up as a "photos & notes →" link next to the goal in both the
+Goals app and that month's recap page.
+
+Open the new file and write it up. To add photos, drop image files next to
+it in `src/content/goal-logs/`, then either set `coverImage: ./photo.jpg` in
+its frontmatter or embed any number of them in the body with
+`![](./photo.jpg)`. Commit + push as usual.
+
 ## Monthly recap & history
 
 Nothing to do here — `/recap/YYYY-MM/` pages and the History app are

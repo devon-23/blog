@@ -366,6 +366,19 @@
   text-decoration: line-through;
 }
 
+.goal-log-link {
+  display: inline-block;
+  margin-left: 6px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 10px;
+}
+
+.goal-log-hint {
+  color: #888;
+  font-size: 10px;
+  font-style: italic;
+}
+
 .app-goals-link {
   display: inline-block;
   font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;

@@ -1,17 +1,21 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Desktop from '../components/desktop/Desktop';
-import { getAllPublishedPosts, getAllPublishedRecommendations, getAllMonthKeys, getMonthRecap } from '../lib/recap';
-import { postHref, recommendationHref, recapHref } from '../lib/paths';
-import { formatDate, formatMonthLabel, toMonthKey } from '../lib/format';
+import { getAllPublishedPosts, getAllPublishedRecommendations, getAllMonthKeys } from '../lib/recap';
+import { postHref, recommendationHref, recapHref, goalLogHref } from '../lib/paths';
+import { formatDate, formatMonthLabel } from '../lib/format';
 import { CATEGORY_META } from '../data/categories';
 import type { DesktopData } from '../components/desktop/types';
 
-const [posts, recommendations, monthKeys] = await Promise.all([
+const [posts, recommendations, monthKeys, goalEntries] = await Promise.all([
   getAllPublishedPosts(),
   getAllPublishedRecommendations(),
   getAllMonthKeys(),
+  getCollection('goals'),
 ]);
+
+const goalsByMonth = new Map(goalEntries.map((g) => [g.data.month, g]));
 
 const desktopPosts = posts.map((post) => ({
   slug: post.id,
@@ -37,22 +41,26 @@ const desktopRecommendations = recommendations.map((rec) => {
   };
 });
 
-const desktopMonths = monthKeys.map((key) => ({
-  key,
-  label: formatMonthLabel(key),
-  href: recapHref(key),
-}));
-
-const currentMonthKey = toMonthKey(new Date());
-const currentRecap = await getMonthRecap(currentMonthKey);
+const desktopMonths = monthKeys.map((key) => {
+  const goalEntry = goalsByMonth.get(key);
+  return {
+    key,
+    label: formatMonthLabel(key),
+    href: recapHref(key),
+    goals: goalEntry
+      ? goalEntry.data.goals.map((g) => ({
+          text: g.text,
+          done: g.done,
+          logHref: g.logSlug ? goalLogHref(g.logSlug) : undefined,
+        }))
+      : null,
+  };
+});
 
 const desktopData: DesktopData = {
   posts: desktopPosts,
   recommendations: desktopRecommendations,
   months: desktopMonths,
-  currentMonthLabel: formatMonthLabel(currentMonthKey),
-  currentMonthHref: recapHref(currentMonthKey),
-  currentGoals: currentRecap.goals ? currentRecap.goals.data.goals : null,
 };
 ---
 
