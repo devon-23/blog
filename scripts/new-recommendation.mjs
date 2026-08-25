@@ -4,11 +4,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import prompts from 'prompts';
 import { slugify, todayISODate } from './lib/slugify.mjs';
+import { CATEGORY_IDS, CATEGORY_META } from '../src/data/categories.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const RECS_DIR = join(__dirname, '..', 'src', 'content', 'recommendations');
-
-const CATEGORIES = ['food', 'music', 'culture', 'wellness', 'travel', 'favorites', 'misc'];
 
 async function main() {
   const answers = await prompts(
@@ -18,7 +17,7 @@ async function main() {
         type: 'select',
         name: 'category',
         message: 'Category',
-        choices: CATEGORIES.map((c) => ({ title: c, value: c })),
+        choices: CATEGORY_IDS.map((c) => ({ title: `${CATEGORY_META[c].emoji} ${CATEGORY_META[c].label}`, value: c })),
       },
       { type: 'text', name: 'summary', message: 'One-line summary (optional)' },
       { type: 'text', name: 'link', message: 'Link (optional, URL)' },

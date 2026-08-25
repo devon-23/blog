@@ -36,6 +36,18 @@ creates `src/content/recommendations/YYYY-MM-DD-your-title.md`. Open it and
 write a short "why it matters" body, then commit + push as above.
 Recommendations show up grouped by category on the Recommendations app/page.
 
+### Adding a new category
+
+`src/data/categories.ts` is the single source of truth for valid categories
+(id, label, emoji, and display order). To add one — say, `games` — add it in
+three places in that one file: the `RecommendationCategory` type, the
+`CATEGORY_META` map, and `CATEGORY_ORDER`. That's it: both the content
+schema (`content.config.ts`) and the `new:recommendation` prompt read from
+this file automatically, so nothing else needs to change. (Previously the
+valid list was duplicated in `content.config.ts` too, which is what caused
+existing recommendations to fail validation after adding a category only
+here — that's fixed now, this file is the only place to touch.)
+
 ## New month's goals
 
 ```sh
