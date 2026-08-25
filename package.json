@@ -1,0 +1,37 @@
+{
+  "name": "blog",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "new:post": "node scripts/new-post.mjs",
+    "new:recommendation": "node scripts/new-recommendation.mjs",
+    "new:month": "node --experimental-strip-types scripts/new-month.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.4",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "98.css": "^0.1.21",
+    "astro": "^7.2.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-rnd": "^10.5.3",
+    "zustand": "^5.0.15"
+  },
+  "allowScripts": {
+    "esbuild": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/prompts": "^2.4.9",
+    "prompts": "^2.4.2",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,85 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: #008080;
+  color: #222;
+}
+
+a {
+  color: #00f;
+}
+
+/* Long-form reading content (article/think-piece bodies) reads better in a
+   plain, larger, non-pixelated face than 98.css's UI-chrome font. */
+.prose {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #111;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose p {
+  margin: 0 0 1em;
+}
+
+.prose a {
+  color: #00006e;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose blockquote {
+  margin: 1em 0;
+  padding: 0.25em 1em;
+  border-left: 3px solid #808080;
+  color: #333;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+}
+
+.prose code {
+  background: #fff;
+  padding: 0 3px;
+}
+
+.prose pre code {
+  padding: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

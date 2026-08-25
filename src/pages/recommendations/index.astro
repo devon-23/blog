@@ -1,0 +1,60 @@
+---
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import RecommendationCard from '../../components/shared/RecommendationCard.astro';
+import { getAllPublishedRecommendations } from '../../lib/recap';
+import { CATEGORY_META, CATEGORY_ORDER } from '../../data/categories';
+
+const recs = await getAllPublishedRecommendations();
+const grouped = CATEGORY_ORDER.map((category) => ({
+  category,
+  meta: CATEGORY_META[category],
+  items: recs.filter((rec) => rec.data.category === category),
+})).filter((group) => group.items.length > 0);
+---
+
+<DocumentLayout title="Recommendations" kicker="Folder" statusRight={`${recs.length} item${recs.length === 1 ? '' : 's'}`}>
+  {
+    grouped.length === 0 ? (
+      <p>Nothing here yet.</p>
+    ) : (
+      grouped.map((group) => (
+        <section class="category-group">
+          <h2 class="category-heading">
+            <span class="category-emoji">{group.meta.emoji}</span> {group.meta.label}
+          </h2>
+          <ul class="list">
+            {group.items.map((rec) => (
+              <RecommendationCard rec={rec} />
+            ))}
+          </ul>
+        </section>
+      ))
+    )
+  }
+</DocumentLayout>
+
+<style>
+  .list {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+  }
+
+  .category-group {
+    margin-bottom: 22px;
+  }
+
+  .category-heading {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+    margin: 0 0 6px;
+  }
+
+  .category-emoji {
+    font-size: 14px;
+  }
+</style>

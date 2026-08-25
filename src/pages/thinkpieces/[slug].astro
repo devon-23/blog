@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import { formatDate } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => data.type === 'thinkpiece' && !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<DocumentLayout
+  title={post.data.title}
+  description={post.data.summary}
+  kicker="Think Piece"
+  statusLeft={formatDate(post.data.date)}
+  statusRight={post.data.tags.join(', ')}
+>
+  <Content />
+</DocumentLayout>

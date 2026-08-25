@@ -1,0 +1,24 @@
+---
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import { getAllMonthKeys } from '../../lib/recap';
+import { recapHref } from '../../lib/paths';
+import { formatMonthLabel } from '../../lib/format';
+
+const monthKeys = await getAllMonthKeys();
+---
+
+<DocumentLayout title="History" kicker="Folder view" statusRight={`${monthKeys.length} month${monthKeys.length === 1 ? '' : 's'}`}>
+  {
+    monthKeys.length === 0 ? (
+      <p>No months yet.</p>
+    ) : (
+      <ul class="tree-view">
+        {monthKeys.map((key) => (
+          <li>
+            <a href={recapHref(key)}>{formatMonthLabel(key)}</a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</DocumentLayout>

@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import { formatDate } from '../../lib/format';
+import { CATEGORY_META } from '../../data/categories';
+
+export async function getStaticPaths() {
+  const recs = await getCollection('recommendations', ({ data }) => !data.draft);
+  return recs.map((rec) => ({
+    params: { slug: rec.id },
+    props: { rec },
+  }));
+}
+
+const { rec } = Astro.props;
+const { Content } = await render(rec);
+const categoryMeta = CATEGORY_META[rec.data.category];
+---
+
+<DocumentLayout
+  title={rec.data.title}
+  description={rec.data.summary}
+  kicker={`Recommendation — ${categoryMeta.emoji} ${categoryMeta.label}`}
+  statusLeft={formatDate(rec.data.date)}
+  statusRight={rec.data.rating ? '★'.repeat(rec.data.rating) : undefined}
+>
+  <Content />
+  {
+    rec.data.link && (
+      <p>
+        <a href={rec.data.link} target="_blank" rel="noopener noreferrer">
+          Visit link &rarr;
+        </a>
+      </p>
+    )
+  }
+</DocumentLayout>

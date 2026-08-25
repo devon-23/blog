@@ -1,0 +1,75 @@
+---
+import type { RecommendationEntry } from '../../lib/recap';
+import { recommendationHref } from '../../lib/paths';
+import { formatDate } from '../../lib/format';
+
+interface Props {
+  rec: RecommendationEntry;
+}
+
+const { rec } = Astro.props;
+const href = recommendationHref(rec);
+---
+
+<li class="rec-card">
+  <a href={href} class="rec-card-link">
+    <span class="rec-card-title">{rec.data.title}</span>
+    {rec.data.summary && <span class="rec-card-summary">{rec.data.summary}</span>}
+    <span class="rec-card-meta">
+      {rec.data.rating && <span class="rec-card-rating">{'★'.repeat(rec.data.rating)}{'☆'.repeat(5 - rec.data.rating)}</span>}
+      <span class="rec-card-date">{formatDate(rec.data.date)}</span>
+    </span>
+  </a>
+</li>
+
+<style>
+  .rec-card {
+    list-style: none;
+    border-bottom: 1px solid #808080;
+  }
+
+  .rec-card:last-child {
+    border-bottom: none;
+  }
+
+  .rec-card-link {
+    display: block;
+    padding: 10px 4px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .rec-card-link:hover .rec-card-title {
+    text-decoration: underline;
+  }
+
+  .rec-card-title {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+  }
+
+  .rec-card-summary {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #333;
+    margin-top: 2px;
+  }
+
+  .rec-card-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 10px;
+    color: #555;
+  }
+
+  .rec-card-rating {
+    color: #a06c00;
+    letter-spacing: 1px;
+  }
+</style>

@@ -1,0 +1,102 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title: string;
+  description?: string;
+  kicker?: string;
+  statusLeft?: string;
+  statusRight?: string;
+}
+
+const { title, description, kicker, statusLeft, statusRight } = Astro.props;
+---
+
+<BaseLayout title={`${title} — devon's desktop`} description={description}>
+  <div class="doc-shell">
+    <div class="window doc-window">
+      <div class="title-bar">
+        <div class="title-bar-text">{kicker ? `${kicker} — ` : ''}{title}</div>
+        <div class="title-bar-controls">
+          <a href={withBase('/')} aria-label="Close" title="Back to desktop"></a>
+        </div>
+      </div>
+      <div class="window-body doc-body">
+        <a class="back-link" href={withBase('/')}>&larr; Back to desktop</a>
+        {kicker && <p class="doc-kicker">{kicker}</p>}
+        <h1 class="doc-title">{title}</h1>
+        <div class="prose">
+          <slot />
+        </div>
+      </div>
+      {
+        (statusLeft || statusRight) && (
+          <div class="status-bar">
+            {statusLeft && <p class="status-bar-field">{statusLeft}</p>}
+            {statusRight && <p class="status-bar-field">{statusRight}</p>}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .doc-shell {
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .doc-window {
+    width: 100%;
+    max-width: 760px;
+    height: fit-content;
+  }
+
+  .doc-body {
+    background: #fff;
+    padding: 20px 24px 28px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 14px;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    text-decoration: none;
+  }
+
+  .doc-kicker {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #555;
+    margin: 0 0 4px;
+  }
+
+  .doc-title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 28px;
+    margin: 0 0 18px;
+    line-height: 1.2;
+  }
+
+  .title-bar-controls a[aria-label='Close'] {
+    display: block;
+    width: 16px;
+    height: 14px;
+    background-color: silver;
+    box-shadow:
+      inset -1px -1px #0a0a0a,
+      inset 1px 1px #fff,
+      inset -2px -2px grey,
+      inset 2px 2px #dfdfdf;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h2v1h1v1h2V1h1V0h2v1H7v1H6v1H5v1h1v1h1v1h1v1H6V6H5V5H3v1H2v1H0V6h1V5h1V4h1V3H2V2H1V1H0V0z' fill='%23000'/%3E%3C/svg%3E");
+    background-position: top 3px left 4px;
+    background-repeat: no-repeat;
+  }
+</style>

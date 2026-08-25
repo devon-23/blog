@@ -1,0 +1,180 @@
+---
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import PostCard from '../../components/shared/PostCard.astro';
+import RecommendationCard from '../../components/shared/RecommendationCard.astro';
+import { getAllMonthKeys, getMonthRecap } from '../../lib/recap';
+import { recapHref } from '../../lib/paths';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const monthKeys = await getAllMonthKeys();
+  return monthKeys.map((monthKey, index) => ({
+    params: { month: monthKey },
+    props: {
+      monthKey,
+      prevKey: monthKeys[index + 1] ?? null, // older (array is newest-first)
+      nextKey: monthKeys[index - 1] ?? null, // newer
+    },
+  }));
+}
+
+const { monthKey, prevKey, nextKey } = Astro.props;
+const recap = await getMonthRecap(monthKey);
+
+const articles = recap.posts.filter((p) => p.data.type === 'article');
+const thinkpieces = recap.posts.filter((p) => p.data.type === 'thinkpiece');
+const updates = recap.posts.filter((p) => p.data.type === 'update');
+
+const totalItems = recap.posts.length + recap.recommendations.length;
+---
+
+<DocumentLayout
+  title={recap.label}
+  kicker="Monthly recap"
+  statusLeft={`${totalItems} item${totalItems === 1 ? '' : 's'} added`}
+  statusRight={recap.goals ? `${recap.goals.data.goals.filter((g) => g.done).length}/${recap.goals.data.goals.length} goals done` : undefined}
+>
+  <p class="recap-intro">
+    Everything added to the site in {recap.label}
+    {totalItems === 0 && ' — nothing yet, check back soon.'}
+  </p>
+
+  {
+    recap.goals && recap.goals.data.goals.length > 0 && (
+      <section class="recap-section">
+        <h2>Goals for the month</h2>
+        <ul class="goals-list">
+          {recap.goals.data.goals.map((goal) => (
+            <li class={goal.done ? 'goal-done' : ''}>
+              <span class="goal-check">{goal.done ? '☑' : '☐'}</span> {goal.text}
+            </li>
+          ))}
+        </ul>
+        {recap.goals.data.notes && <p class="goals-notes">{recap.goals.data.notes}</p>}
+      </section>
+    )
+  }
+
+  {
+    updates.length > 0 && (
+      <section class="recap-section">
+        <h2>Updates</h2>
+        <ul class="list">
+          {updates.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    articles.length > 0 && (
+      <section class="recap-section">
+        <h2>Articles</h2>
+        <ul class="list">
+          {articles.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    thinkpieces.length > 0 && (
+      <section class="recap-section">
+        <h2>Think Pieces</h2>
+        <ul class="list">
+          {thinkpieces.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    recap.recommendations.length > 0 && (
+      <section class="recap-section">
+        <h2>Recommendations</h2>
+        <ul class="list">
+          {recap.recommendations.map((rec) => (
+            <RecommendationCard rec={rec} />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <nav class="month-nav">
+    {prevKey ? <a href={recapHref(prevKey)}>&larr; Older</a> : <span />}
+    <a href={withBase('/recap/')}>All months</a>
+    {nextKey ? <a href={recapHref(nextKey)}>Newer &rarr;</a> : <span />}
+  </nav>
+</DocumentLayout>
+
+<style>
+  .recap-intro {
+    color: #444;
+  }
+
+  .recap-section {
+    margin-top: 24px;
+  }
+
+  .recap-section h2 {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+    margin: 0 0 6px;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .goals-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 12px;
+  }
+
+  .goals-list li {
+    padding: 4px 0;
+  }
+
+  .goal-check {
+    display: inline-block;
+    width: 1.2em;
+  }
+
+  .goal-done {
+    color: #555;
+    text-decoration: line-through;
+  }
+
+  .goals-notes {
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  .month-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding-top: 12px;
+    border-top: 1px solid #808080;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+  }
+</style>

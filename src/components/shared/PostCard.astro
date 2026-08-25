@@ -1,0 +1,80 @@
+---
+import type { PostEntry } from '../../lib/recap';
+import { postHref } from '../../lib/paths';
+import { formatDate, TYPE_LABEL } from '../../lib/format';
+
+interface Props {
+  post: PostEntry;
+}
+
+const { post } = Astro.props;
+const href = postHref(post);
+---
+
+<li class="post-card">
+  <a href={href} class="post-card-link">
+    <span class="post-card-type">{TYPE_LABEL[post.data.type]}</span>
+    <span class="post-card-title">{post.data.title}</span>
+    <span class="post-card-summary">{post.data.summary}</span>
+    <span class="post-card-date">{formatDate(post.data.date)}</span>
+  </a>
+</li>
+
+<style>
+  .post-card {
+    list-style: none;
+    border-bottom: 1px solid #808080;
+  }
+
+  .post-card:last-child {
+    border-bottom: none;
+  }
+
+  .post-card-link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'type date'
+      'title title'
+      'summary summary';
+    gap: 2px 8px;
+    padding: 10px 4px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-card-link:hover .post-card-title {
+    text-decoration: underline;
+  }
+
+  .post-card-type {
+    grid-area: type;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #00006e;
+  }
+
+  .post-card-date {
+    grid-area: date;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 10px;
+    color: #555;
+  }
+
+  .post-card-title {
+    grid-area: title;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    color: #111;
+  }
+
+  .post-card-summary {
+    grid-area: summary;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #333;
+  }
+</style>

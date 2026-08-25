@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Desktop from '../components/desktop/Desktop';
+import { getAllPublishedPosts, getAllPublishedRecommendations, getAllMonthKeys, getMonthRecap } from '../lib/recap';
+import { postHref, recommendationHref, recapHref } from '../lib/paths';
+import { formatDate, formatMonthLabel, toMonthKey } from '../lib/format';
+import { CATEGORY_META } from '../data/categories';
+import type { DesktopData } from '../components/desktop/types';
+
+const [posts, recommendations, monthKeys] = await Promise.all([
+  getAllPublishedPosts(),
+  getAllPublishedRecommendations(),
+  getAllMonthKeys(),
+]);
+
+const desktopPosts = posts.map((post) => ({
+  slug: post.id,
+  title: post.data.title,
+  summary: post.data.summary,
+  type: post.data.type,
+  dateLabel: formatDate(post.data.date),
+  href: postHref(post),
+}));
+
+const desktopRecommendations = recommendations.map((rec) => {
+  const meta = CATEGORY_META[rec.data.category];
+  return {
+    slug: rec.id,
+    title: rec.data.title,
+    summary: rec.data.summary,
+    category: rec.data.category,
+    categoryLabel: meta.label,
+    categoryEmoji: meta.emoji,
+    dateLabel: formatDate(rec.data.date),
+    rating: rec.data.rating,
+    href: recommendationHref(rec),
+  };
+});
+
+const desktopMonths = monthKeys.map((key) => ({
+  key,
+  label: formatMonthLabel(key),
+  href: recapHref(key),
+}));
+
+const currentMonthKey = toMonthKey(new Date());
+const currentRecap = await getMonthRecap(currentMonthKey);
+
+const desktopData: DesktopData = {
+  posts: desktopPosts,
+  recommendations: desktopRecommendations,
+  months: desktopMonths,
+  currentMonthLabel: formatMonthLabel(currentMonthKey),
+  currentMonthHref: recapHref(currentMonthKey),
+  currentGoals: currentRecap.goals ? currentRecap.goals.data.goals : null,
+};
+---
+
+<BaseLayout title="devon's desktop">
+  <Desktop client:only="react" data={desktopData} />
+</BaseLayout>
