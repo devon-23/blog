@@ -90,8 +90,10 @@ export default function SearchApp() {
         {results.map((r) => (
           <li key={r.url}>
             <a href={r.url}>
-              <span className="app-list-title">{r.meta?.title || r.url}</span>
-              <span className="app-list-summary" dangerouslySetInnerHTML={{ __html: r.excerpt }} />
+              <span className="app-list-body">
+                <span className="app-list-title">{r.meta?.title || r.url}</span>
+                <span className="app-list-summary" dangerouslySetInnerHTML={{ __html: r.excerpt }} />
+              </span>
             </a>
           </li>
         ))}

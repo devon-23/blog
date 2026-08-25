@@ -12,21 +12,25 @@ const posts = defineCollection({
       summary: z.string(),
       tags: z.array(z.string()).default([]),
       coverImage: image().optional(),
+      gallery: z.array(image()).default([]),
       draft: z.boolean().default(false),
     }),
 });
 
 const recommendations = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/recommendations' }),
-  schema: z.object({
-    title: z.string(),
-    category: z.enum(CATEGORY_IDS),
-    date: z.coerce.date(),
-    summary: z.string().optional(),
-    link: z.string().url().optional(),
-    rating: z.number().min(1).max(5).optional(),
-    draft: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      category: z.enum(CATEGORY_IDS),
+      date: z.coerce.date(),
+      summary: z.string().optional(),
+      link: z.string().url().optional(),
+      rating: z.number().min(1).max(5).optional(),
+      coverImage: image().optional(),
+      gallery: z.array(image()).default([]),
+      draft: z.boolean().default(false),
+    }),
 });
 
 const goals = defineCollection({
@@ -60,6 +64,7 @@ const goalLogs = defineCollection({
       date: z.coerce.date(),
       rating: z.number().min(1).max(5).optional(),
       coverImage: image().optional(),
+      gallery: z.array(image()).default([]),
       draft: z.boolean().default(false),
     }),
 });

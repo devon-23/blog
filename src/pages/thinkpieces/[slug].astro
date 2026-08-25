@@ -21,6 +21,8 @@ const { Content } = await render(post);
   kicker="Think Piece"
   statusLeft={formatDate(post.data.date)}
   statusRight={post.data.tags.join(', ')}
+  coverImage={post.data.coverImage}
+  gallery={post.data.gallery}
 >
   <Content />
 </DocumentLayout>

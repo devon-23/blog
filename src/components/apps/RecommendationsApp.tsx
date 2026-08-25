@@ -24,11 +24,14 @@ export default function RecommendationsApp({ recommendations }: Props) {
               {items.map((rec) => (
                 <li key={rec.slug}>
                   <a href={rec.href}>
-                    <span className="app-list-title">{rec.title}</span>
-                    {rec.summary && <span className="app-list-summary">{rec.summary}</span>}
-                    <span className="app-list-date">
-                      {rec.rating ? '★'.repeat(rec.rating) + ' · ' : ''}
-                      {rec.dateLabel}
+                    {rec.coverImageSrc && <img className="app-list-thumb" src={rec.coverImageSrc} alt="" />}
+                    <span className="app-list-body">
+                      <span className="app-list-title">{rec.title}</span>
+                      {rec.summary && <span className="app-list-summary">{rec.summary}</span>}
+                      <span className="app-list-date">
+                        {rec.rating ? '★'.repeat(rec.rating) + ' · ' : ''}
+                        {rec.dateLabel}
+                      </span>
                     </span>
                   </a>
                 </li>

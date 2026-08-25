@@ -1,0 +1,93 @@
+---
+import DocumentLayout from '../layouts/DocumentLayout.astro';
+import { getAllGalleryImages } from '../lib/gallery';
+import { formatDate } from '../lib/format';
+
+const images = await getAllGalleryImages();
+---
+
+<DocumentLayout title="Gallery" kicker="My Pictures" statusRight={`${images.length} photo${images.length === 1 ? '' : 's'}`}>
+  {
+    images.length === 0 ? (
+      <p>No photos yet — add a <code>coverImage</code> or <code>gallery</code> to any article, think piece, recommendation, or goal log.</p>
+    ) : (
+      <div class="gallery-grid">
+        {images.map((img) => (
+          <a class="gallery-tile" href={img.sourceHref} title={img.sourceTitle}>
+            <img src={img.src} width={img.width} height={img.height} alt={img.sourceTitle} loading="lazy" />
+            <span class="gallery-tile-caption">
+              <span class="gallery-tile-kind">{img.sourceKind}</span>
+              <span class="gallery-tile-title">{img.sourceTitle}</span>
+              <span class="gallery-tile-date">{formatDate(img.date)}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    )
+  }
+</DocumentLayout>
+
+<style>
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .gallery-tile {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #999;
+    overflow: hidden;
+  }
+
+  .gallery-tile img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .gallery-tile-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .gallery-tile:hover .gallery-tile-caption,
+  .gallery-tile:focus .gallery-tile-caption {
+    opacity: 1;
+  }
+
+  .gallery-tile-kind {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ffd76b;
+  }
+
+  .gallery-tile-title {
+    font-size: 11px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gallery-tile-date {
+    font-size: 9px;
+    color: #ccc;
+  }
+</style>

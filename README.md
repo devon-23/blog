@@ -32,6 +32,8 @@ commit. Nothing on this site is ever deleted, only added to.
 - **Search** (Search icon / `/pagefind/`) — static full-text search over every page, via [Pagefind](https://pagefind.app). Only works after a real build (`npm run build`, which indexes `dist/` in a `postbuild` step) — it won't find anything under plain `npm run dev`.
 - **Links page** (`/links/`) — a classic blogroll with 88x31 pixel web badges (`public/badges/`, listed in `src/data/badges.ts`).
 - **Display Properties** — right-click the desktop background → Properties to switch wallpaper (Teal / Clouds / Maze); the choice is remembered per-visitor via `localStorage`.
+- **Gallery** (`/gallery/`) — every cover photo and gallery image across the whole site, pulled together automatically. See "Adding photos" in [AUTHORING.md](./AUTHORING.md).
+- **Rich links** — a recommendation's `link` embeds a YouTube/Spotify player automatically, or shows a fetched Open Graph preview card (poster, title, description) for anything else — a Letterboxd film link, IMDb, Goodreads, whatever. See "Rich links" in [AUTHORING.md](./AUTHORING.md).
 - A cursor trail, because it's 2003.
 
 ## Project structure

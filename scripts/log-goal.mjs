@@ -84,9 +84,10 @@ async function main() {
     'Write about it here.',
     '',
     'To add photos: drop image files next to this one in',
-    '`src/content/goal-logs/`, then either reference one as the cover in the',
-    "frontmatter above (`coverImage: ./your-photo.jpg`) or embed any number of",
-    'them right in this body with `![](./your-photo.jpg)`.',
+    '`src/content/goal-logs/`, then reference one as the cover by adding',
+    '`coverImage: ./your-photo.jpg` to the frontmatter above, list several as',
+    '`gallery: [./photo1.jpg, ./photo2.jpg]`, and/or embed any number of them',
+    'right in this body with `![](./your-photo.jpg)`.',
     '',
   ].join('\n');
 

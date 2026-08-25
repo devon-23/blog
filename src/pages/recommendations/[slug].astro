@@ -1,8 +1,10 @@
 ---
 import { getCollection, render } from 'astro:content';
 import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import LinkPreviewCard from '../../components/shared/LinkPreviewCard.astro';
 import { formatDate } from '../../lib/format';
 import { CATEGORY_META } from '../../data/categories';
+import { getLinkPreview } from '../../lib/linkPreview';
 
 export async function getStaticPaths() {
   const recs = await getCollection('recommendations', ({ data }) => !data.draft);
@@ -15,6 +17,7 @@ export async function getStaticPaths() {
 const { rec } = Astro.props;
 const { Content } = await render(rec);
 const categoryMeta = CATEGORY_META[rec.data.category];
+const linkPreview = rec.data.link ? await getLinkPreview(rec.data.link) : null;
 ---
 
 <DocumentLayout
@@ -23,15 +26,9 @@ const categoryMeta = CATEGORY_META[rec.data.category];
   kicker={`Recommendation — ${categoryMeta.emoji} ${categoryMeta.label}`}
   statusLeft={formatDate(rec.data.date)}
   statusRight={rec.data.rating ? '★'.repeat(rec.data.rating) : undefined}
+  coverImage={rec.data.coverImage}
+  gallery={rec.data.gallery}
 >
   <Content />
-  {
-    rec.data.link && (
-      <p>
-        <a href={rec.data.link} target="_blank" rel="noopener noreferrer">
-          Visit link &rarr;
-        </a>
-      </p>
-    )
-  }
+  {linkPreview && <LinkPreviewCard preview={linkPreview} />}
 </DocumentLayout>

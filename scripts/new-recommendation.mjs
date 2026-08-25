@@ -20,7 +20,11 @@ async function main() {
         choices: CATEGORY_IDS.map((c) => ({ title: `${CATEGORY_META[c].emoji} ${CATEGORY_META[c].label}`, value: c })),
       },
       { type: 'text', name: 'summary', message: 'One-line summary (optional)' },
-      { type: 'text', name: 'link', message: 'Link (optional, URL)' },
+      {
+        type: 'text',
+        name: 'link',
+        message: 'Link (optional — YouTube/Spotify embed automatically, other links (Letterboxd, IMDb, etc.) show a preview card)',
+      },
       {
         type: 'number',
         name: 'rating',
@@ -51,7 +55,17 @@ async function main() {
   if (answers.summary) lines.push(`summary: ${JSON.stringify(answers.summary)}`);
   if (answers.link) lines.push(`link: ${JSON.stringify(answers.link)}`);
   if (answers.rating) lines.push(`rating: ${answers.rating}`);
-  lines.push('draft: false', '---', '', 'Write why it matters here.', '');
+  lines.push(
+    'draft: false',
+    '# To add photos, drop image files next to this one in src/content/recommendations/,',
+    '# then uncomment and fill in:',
+    '# coverImage: ./your-photo.jpg',
+    '# gallery: [./photo1.jpg, ./photo2.jpg]',
+    '---',
+    '',
+    'Write why it matters here.',
+    ''
+  );
 
   mkdirSync(RECS_DIR, { recursive: true });
   writeFileSync(filepath, lines.join('\n'));

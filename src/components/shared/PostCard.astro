@@ -13,10 +13,15 @@ const href = postHref(post);
 
 <li class="post-card">
   <a href={href} class="post-card-link">
-    <span class="post-card-type">{TYPE_LABEL[post.data.type]}</span>
-    <span class="post-card-title">{post.data.title}</span>
-    <span class="post-card-summary">{post.data.summary}</span>
-    <span class="post-card-date">{formatDate(post.data.date)}</span>
+    {post.data.coverImage && <img class="post-card-thumb" src={post.data.coverImage.src} alt="" />}
+    <span class="post-card-body">
+      <span class="post-card-toprow">
+        <span class="post-card-type">{TYPE_LABEL[post.data.type]}</span>
+        <span class="post-card-date">{formatDate(post.data.date)}</span>
+      </span>
+      <span class="post-card-title">{post.data.title}</span>
+      <span class="post-card-summary">{post.data.summary}</span>
+    </span>
   </a>
 </li>
 
@@ -31,13 +36,8 @@ const href = postHref(post);
   }
 
   .post-card-link {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      'type date'
-      'title title'
-      'summary summary';
-    gap: 2px 8px;
+    display: flex;
+    gap: 10px;
     padding: 10px 4px;
     text-decoration: none;
     color: inherit;
@@ -47,8 +47,28 @@ const href = postHref(post);
     text-decoration: underline;
   }
 
+  .post-card-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #999;
+  }
+
+  .post-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .post-card-toprow {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
   .post-card-type {
-    grid-area: type;
     font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
     font-size: 10px;
     text-transform: uppercase;
@@ -57,14 +77,12 @@ const href = postHref(post);
   }
 
   .post-card-date {
-    grid-area: date;
     font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
     font-size: 10px;
     color: #555;
   }
 
   .post-card-title {
-    grid-area: title;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     font-weight: bold;
@@ -72,7 +90,6 @@ const href = postHref(post);
   }
 
   .post-card-summary {
-    grid-area: summary;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
     color: #333;

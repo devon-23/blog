@@ -2,6 +2,7 @@ export type RecommendationCategory =
   | 'food'
   | 'movies'
   | 'tv shows'
+  | 'books'
   | 'music'
   | 'culture'
   | 'wellness'
@@ -13,6 +14,7 @@ export const CATEGORY_META: Record<RecommendationCategory, { label: string; emoj
   food: { label: 'Food & Drink', emoji: '🍴' },
   movies: { label: 'Movies', emoji: '🎬' },
   'tv shows': { label: 'TV Shows', emoji: '📺' },
+  books: { label: 'Books', emoji: '📚' },
   music: { label: 'Music', emoji: '🎻' },
   culture: { label: 'Culture', emoji: '🗡️' },
   wellness: { label: 'Wellness', emoji: '💤' },
@@ -26,6 +28,7 @@ export const CATEGORY_ORDER: RecommendationCategory[] = [
   'favorites',
   'movies',
   'tv shows',
+  'books',
   'music',
   'food',
   'culture',

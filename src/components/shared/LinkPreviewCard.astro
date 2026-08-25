@@ -1,0 +1,58 @@
+---
+import type { LinkPreview } from '../../lib/linkPreview';
+
+interface Props {
+  preview: LinkPreview;
+}
+
+const { preview } = Astro.props;
+const hasOgContent = preview.type === 'og' && (preview.title || preview.image);
+---
+
+{
+  preview.type === 'youtube' && (
+    <div class="link-embed">
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${preview.youtubeId}`}
+        title="Embedded YouTube video"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      />
+    </div>
+  )
+}
+
+{
+  preview.type === 'spotify' && (
+    <div class="link-embed link-embed-spotify">
+      <iframe
+        src={preview.embedUrl}
+        title="Embedded Spotify player"
+        loading="lazy"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      />
+    </div>
+  )
+}
+
+{
+  hasOgContent && (
+    <a class="link-preview-card" href={preview.url} target="_blank" rel="noopener noreferrer">
+      {preview.image && <img src={preview.image} alt="" />}
+      <span class="link-preview-body">
+        {preview.siteName && <span class="link-preview-site">{preview.siteName}</span>}
+        {preview.title && <span class="link-preview-title">{preview.title}</span>}
+        {preview.description && <span class="link-preview-desc">{preview.description}</span>}
+      </span>
+    </a>
+  )
+}
+
+{
+  preview.type !== 'youtube' && preview.type !== 'spotify' && !hasOgContent && (
+    <a class="link-preview-plain" href={preview.url} target="_blank" rel="noopener noreferrer">
+      Visit link &rarr;
+    </a>
+  )
+}

@@ -21,9 +21,10 @@ const { Content } = await render(log);
   kicker="Goal log"
   statusLeft={formatDate(log.data.date)}
   statusRight={log.data.rating ? '★'.repeat(log.data.rating) + '☆'.repeat(5 - log.data.rating) : undefined}
+  coverImage={log.data.coverImage}
+  gallery={log.data.gallery}
 >
   <p class="goal-log-source">Goal: {log.data.goalText}</p>
-  {log.data.coverImage && <img class="goal-log-cover" src={log.data.coverImage.src} alt="" />}
   <Content />
 </DocumentLayout>
 
@@ -37,12 +38,5 @@ const { Content } = await render(log);
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
     margin-bottom: 14px;
-  }
-
-  .goal-log-cover {
-    display: block;
-    max-width: 100%;
-    border: 1px solid #999;
-    margin-bottom: 16px;
   }
 </style>

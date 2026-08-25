@@ -90,6 +90,65 @@ it in `src/content/goal-logs/`, then either set `coverImage: ./photo.jpg` in
 its frontmatter or embed any number of them in the body with
 `![](./photo.jpg)`. Commit + push as usual.
 
+## Adding photos
+
+Articles, think pieces, updates, recommendations, and goal logs can all
+carry photos — a single cover image and/or a whole gallery. There's no
+upload button (this is a static site); adding a photo means committing an
+image file, same as adding any other content:
+
+1. Drop the image file(s) next to the Markdown file they belong to — e.g. a
+   photo for `src/content/recommendations/2026-08-24-some-place.md` goes in
+   `src/content/recommendations/` too (a subfolder like
+   `src/content/recommendations/images/` works fine as well, since the path
+   is just relative to the Markdown file).
+2. Reference it in that file's frontmatter:
+   ```yaml
+   coverImage: ./your-photo.jpg
+   gallery: [./photo1.jpg, ./photo2.jpg, ./photo3.jpg]
+   ```
+   Both are optional, and you can use either or both. `coverImage` shows up
+   at the top of the piece (and as a thumbnail on its list/card everywhere
+   else on the site); `gallery` renders as a grid at the bottom of the page.
+3. You can also embed images inline, anywhere in the body text, with normal
+   Markdown: `![a caption](./your-photo.jpg)`.
+4. Commit the image file(s) along with the `.md` file and push, same as
+   always.
+
+Every `npm run new:post` / `new:recommendation` / `log:goal` scaffold
+includes commented-out `coverImage`/`gallery` lines as a reminder — just
+uncomment and fill in the path once you've picked a photo.
+
+### The Gallery
+
+Every `coverImage` and every `gallery` photo across the whole site — posts,
+recommendations, goal logs, all of it — automatically shows up in one place:
+the Gallery app (and `/gallery/` page), newest first. Nothing to maintain
+here either; it's pulled together automatically from whatever images exist.
+
+## Rich links on recommendations
+
+A recommendation's `link` field isn't just a plain "visit link" anymore —
+what shows up depends on what kind of link it is:
+
+- **YouTube** (`youtube.com/watch...` or `youtu.be/...`) — embeds the actual
+  video player.
+- **Spotify** (`open.spotify.com/...` — a track, album, playlist, etc.) —
+  embeds the Spotify player.
+- **Anything else** (Letterboxd, IMDb, Goodreads, a restaurant's website,
+  whatever) — at build time, the site fetches that page's Open Graph
+  metadata and shows a preview card: poster/image, title, and description,
+  linking out to the original. This is what makes a Letterboxd film link
+  show its poster and title automatically, for example — no extra fields to
+  fill in, just paste the link.
+- If a link can't be reached or has no preview metadata, it just falls back
+  to a plain "Visit link →", same as before — nothing breaks.
+
+This all happens automatically from the `link` field you already fill in
+when running `npm run new:recommendation`; there's nothing extra to do.
+(Fetched previews are cached in `.cache/link-previews/` — not committed —
+so repeated local builds don't keep re-fetching the same links.)
+
 ## Monthly recap & history
 
 Nothing to do here — `/recap/YYYY-MM/` pages and the History app are

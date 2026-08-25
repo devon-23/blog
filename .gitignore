@@ -1,5 +1,8 @@
 # build output
 dist/
+
+# cached third-party link-preview metadata (regenerated at build time)
+.cache/
 # generated types
 .astro/
 

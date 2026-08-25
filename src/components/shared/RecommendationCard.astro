@@ -13,11 +13,14 @@ const href = recommendationHref(rec);
 
 <li class="rec-card">
   <a href={href} class="rec-card-link">
-    <span class="rec-card-title">{rec.data.title}</span>
-    {rec.data.summary && <span class="rec-card-summary">{rec.data.summary}</span>}
-    <span class="rec-card-meta">
-      {rec.data.rating && <span class="rec-card-rating">{'★'.repeat(rec.data.rating)}{'☆'.repeat(5 - rec.data.rating)}</span>}
-      <span class="rec-card-date">{formatDate(rec.data.date)}</span>
+    {rec.data.coverImage && <img class="rec-card-thumb" src={rec.data.coverImage.src} alt="" />}
+    <span class="rec-card-body">
+      <span class="rec-card-title">{rec.data.title}</span>
+      {rec.data.summary && <span class="rec-card-summary">{rec.data.summary}</span>}
+      <span class="rec-card-meta">
+        {rec.data.rating && <span class="rec-card-rating">{'★'.repeat(rec.data.rating)}{'☆'.repeat(5 - rec.data.rating)}</span>}
+        <span class="rec-card-date">{formatDate(rec.data.date)}</span>
+      </span>
     </span>
   </a>
 </li>
@@ -33,7 +36,8 @@ const href = recommendationHref(rec);
   }
 
   .rec-card-link {
-    display: block;
+    display: flex;
+    gap: 10px;
     padding: 10px 4px;
     text-decoration: none;
     color: inherit;
@@ -41,6 +45,21 @@ const href = recommendationHref(rec);
 
   .rec-card-link:hover .rec-card-title {
     text-decoration: underline;
+  }
+
+  .rec-card-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #999;
+  }
+
+  .rec-card-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
   }
 
   .rec-card-title {

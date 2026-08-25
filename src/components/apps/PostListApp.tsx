@@ -18,9 +18,12 @@ export default function PostListApp({ posts, type, emptyLabel }: Props) {
       {filtered.map((post) => (
         <li key={post.slug}>
           <a href={post.href}>
-            <span className="app-list-title">{post.title}</span>
-            <span className="app-list-summary">{post.summary}</span>
-            <span className="app-list-date">{post.dateLabel}</span>
+            {post.coverImageSrc && <img className="app-list-thumb" src={post.coverImageSrc} alt="" />}
+            <span className="app-list-body">
+              <span className="app-list-title">{post.title}</span>
+              <span className="app-list-summary">{post.summary}</span>
+              <span className="app-list-date">{post.dateLabel}</span>
+            </span>
           </a>
         </li>
       ))}

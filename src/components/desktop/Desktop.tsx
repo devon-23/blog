@@ -7,6 +7,7 @@ import CursorTrail from './CursorTrail';
 import type { DesktopData } from './types';
 import PostListApp from '../apps/PostListApp';
 import RecommendationsApp from '../apps/RecommendationsApp';
+import GalleryApp from '../apps/GalleryApp';
 import GoalsApp from '../apps/GoalsApp';
 import HistoryApp from '../apps/HistoryApp';
 import AboutApp from '../apps/AboutApp';
@@ -71,6 +72,8 @@ export default function Desktop({ data }: Props) {
         return <PostListApp posts={data.posts} type="update" emptyLabel="No updates yet — check back soon." />;
       case 'recommendations':
         return <RecommendationsApp recommendations={data.recommendations} />;
+      case 'gallery':
+        return <GalleryApp images={data.galleryImages} />;
       case 'goals':
         return <GoalsApp months={data.months} />;
       case 'history':

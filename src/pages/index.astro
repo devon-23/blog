@@ -6,13 +6,15 @@ import { getAllPublishedPosts, getAllPublishedRecommendations, getAllMonthKeys }
 import { postHref, recommendationHref, recapHref, goalLogHref } from '../lib/paths';
 import { formatDate, formatMonthLabel } from '../lib/format';
 import { CATEGORY_META } from '../data/categories';
+import { getAllGalleryImages } from '../lib/gallery';
 import type { DesktopData } from '../components/desktop/types';
 
-const [posts, recommendations, monthKeys, goalEntries] = await Promise.all([
+const [posts, recommendations, monthKeys, goalEntries, galleryImages] = await Promise.all([
   getAllPublishedPosts(),
   getAllPublishedRecommendations(),
   getAllMonthKeys(),
   getCollection('goals'),
+  getAllGalleryImages(),
 ]);
 
 const goalsByMonth = new Map(goalEntries.map((g) => [g.data.month, g]));
@@ -24,6 +26,7 @@ const desktopPosts = posts.map((post) => ({
   type: post.data.type,
   dateLabel: formatDate(post.data.date),
   href: postHref(post),
+  coverImageSrc: post.data.coverImage?.src,
 }));
 
 const desktopRecommendations = recommendations.map((rec) => {
@@ -38,8 +41,19 @@ const desktopRecommendations = recommendations.map((rec) => {
     dateLabel: formatDate(rec.data.date),
     rating: rec.data.rating,
     href: recommendationHref(rec),
+    coverImageSrc: rec.data.coverImage?.src,
   };
 });
+
+const desktopGalleryImages = galleryImages.map((img) => ({
+  src: img.src,
+  width: img.width,
+  height: img.height,
+  sourceTitle: img.sourceTitle,
+  sourceHref: img.sourceHref,
+  sourceKind: img.sourceKind,
+  dateLabel: formatDate(img.date),
+}));
 
 const desktopMonths = monthKeys.map((key) => {
   const goalEntry = goalsByMonth.get(key);
@@ -61,6 +75,7 @@ const desktopData: DesktopData = {
   posts: desktopPosts,
   recommendations: desktopRecommendations,
   months: desktopMonths,
+  galleryImages: desktopGalleryImages,
 };
 ---
 
