@@ -1,0 +1,27 @@
+---
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import MediaIndex from '../../components/shared/MediaIndex.astro';
+import { getMediaLibrary } from '../../lib/media';
+import { PROFILES } from '../../data/profiles';
+
+const { movies } = await getMediaLibrary();
+const rated = movies.filter((m) => m.rating != null);
+const avg = rated.length ? rated.reduce((sum, m) => sum + (m.rating ?? 0), 0) / rated.length : 0;
+---
+
+<DocumentLayout
+  title="Movies"
+  kicker="the film diary"
+  description="Every film I've watched, with my ratings and reviews — pulled from Letterboxd."
+  statusLeft={`${movies.length} films`}
+  statusRight={rated.length ? `avg ${avg.toFixed(2)}★` : undefined}
+>
+  <p>
+    Everything below comes straight from
+    <a href={PROFILES.letterboxd.url} target="_blank" rel="noopener noreferrer">my Letterboxd diary</a>
+    and rebuilds on every deploy. Click any film for the rating, the review I wrote at the time,
+    and anything I've added since.
+  </p>
+
+  <MediaIndex items={movies} kind="movie" />
+</DocumentLayout>

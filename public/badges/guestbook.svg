@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 31">
+  <rect width="88" height="31" fill="#ff66cc" stroke="#000" stroke-width="1"/>
+  <rect x="1" y="1" width="86" height="29" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="3 2"/>
+  <path d="M8 22 L18 12 L22 16 L12 26 Z" fill="#ffd76b" stroke="#000" stroke-width="0.8"/>
+  <text x="27" y="14" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#fff">SIGN MY</text>
+  <text x="27" y="24" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#2b0b24">GUESTBOOK</text>
+</svg>

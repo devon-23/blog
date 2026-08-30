@@ -1,0 +1,149 @@
+---
+import type { MediaItem } from '../../lib/media';
+
+// The static index for one media kind. Everything renders server-side so the
+// list is crawlable, Pagefind-indexable, and complete with JavaScript off; the
+// sort/filter controls are progressive enhancement that reorder the DOM nodes
+// already on the page rather than re-rendering them.
+
+interface Props {
+  items: MediaItem[];
+  kind: 'movie' | 'book' | 'album';
+}
+
+const { items, kind } = Astro.props;
+
+function stars(rating: number): string {
+  const full = Math.floor(rating);
+  return '★'.repeat(full) + (rating - full >= 0.5 ? '½' : '');
+}
+
+const SORTS =
+  kind === 'album'
+    ? [
+        { id: 'plays', label: 'Most played' },
+        { id: 'title', label: 'A–Z' },
+      ]
+    : [
+        { id: 'newest', label: 'Newest' },
+        { id: 'oldest', label: 'Oldest' },
+        { id: 'rating', label: 'Highest rated' },
+        { id: 'title', label: 'A–Z' },
+      ];
+---
+
+<div class="mi-controls">
+  <label>
+    Sort
+    <select id="mi-sort">
+      {SORTS.map((sort) => <option value={sort.id}>{sort.label}</option>)}
+    </select>
+  </label>
+  {
+    kind !== 'album' && (
+      <label class="mi-check">
+        <input type="checkbox" id="mi-rated" />
+        <span>Rated only</span>
+      </label>
+    )
+  }
+  <input type="search" id="mi-search" placeholder="Search…" aria-label="Search" />
+  <span class="mi-count" id="mi-count">{items.length} items</span>
+</div>
+
+<ul class:list={['mi-grid', kind === 'album' && 'square']} id="mi-grid">
+  {
+    items.map((item, i) => (
+      <li
+        class="mi-item"
+        data-title={item.title.toLowerCase()}
+        data-subtitle={(item.subtitle ?? '').toLowerCase()}
+        data-rating={item.rating ?? ''}
+        data-date={item.date ? item.date.getTime() : 0}
+        data-plays={item.playcount ?? 0}
+        data-order={i}
+      >
+        <a href={item.href ?? item.externalUrl} {...(item.href ? {} : { target: '_blank', rel: 'noopener noreferrer' })}>
+          {item.coverUrl ? (
+            <img src={item.coverUrl} alt="" loading="lazy" />
+          ) : (
+            <span class="mi-cover-fallback">{item.title}</span>
+          )}
+          <span class="mi-title">{item.title}</span>
+          {item.subtitle && <span class="mi-subtitle">{item.subtitle}</span>}
+          <span class="mi-meta">
+            {item.rating != null && <span class="mi-stars">{stars(item.rating)}</span>}
+            {item.playcount != null && <span>{item.playcount.toLocaleString()} plays</span>}
+            {item.entry && <span class="mi-note-flag" title="Has a written note">✎ note</span>}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<p class="mi-empty" id="mi-empty" hidden>Nothing matches that.</p>
+
+<script>
+  // Progressive enhancement: the full list is already in the DOM from the
+  // server render. This only reorders and hides nodes, so with JS off the page
+  // still shows everything (just in its default order).
+  const grid = document.getElementById('mi-grid');
+  const sortSelect = document.getElementById('mi-sort') as HTMLSelectElement | null;
+  const ratedOnly = document.getElementById('mi-rated') as HTMLInputElement | null;
+  const search = document.getElementById('mi-search') as HTMLInputElement | null;
+  const count = document.getElementById('mi-count');
+  const empty = document.getElementById('mi-empty');
+
+  if (grid) {
+    const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.mi-item'));
+    const num = (el: HTMLElement, key: string) => Number(el.dataset[key] || 0);
+
+    function apply() {
+      const needle = (search?.value ?? '').trim().toLowerCase();
+      const mode = sortSelect?.value ?? 'newest';
+
+      let shown = 0;
+      for (const item of items) {
+        const matches =
+          (!needle ||
+            (item.dataset.title ?? '').includes(needle) ||
+            (item.dataset.subtitle ?? '').includes(needle)) &&
+          (!ratedOnly?.checked || item.dataset.rating !== '');
+        item.hidden = !matches;
+        if (matches) shown++;
+      }
+
+      const sorted = [...items].sort((a, b) => {
+        switch (mode) {
+          case 'oldest':
+            // Undated items sort last rather than first.
+            return (num(a, 'date') || Infinity) - (num(b, 'date') || Infinity);
+          case 'rating':
+            return (
+              (Number(b.dataset.rating) || -1) - (Number(a.dataset.rating) || -1) ||
+              num(b, 'date') - num(a, 'date')
+            );
+          case 'title':
+            return (a.dataset.title ?? '').localeCompare(b.dataset.title ?? '');
+          case 'plays':
+            return num(b, 'plays') - num(a, 'plays');
+          default:
+            return num(b, 'date') - num(a, 'date');
+        }
+      });
+
+      // One reflow: build the new order in a fragment, then swap it in.
+      const frag = document.createDocumentFragment();
+      for (const item of sorted) frag.appendChild(item);
+      grid!.appendChild(frag);
+
+      if (count) count.textContent = `${shown} of ${items.length}`;
+      if (empty) empty.hidden = shown > 0;
+    }
+
+    sortSelect?.addEventListener('change', apply);
+    ratedOnly?.addEventListener('change', apply);
+    search?.addEventListener('input', apply);
+  }
+</script>

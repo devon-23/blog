@@ -1,0 +1,146 @@
+---
+import type { MediaItem } from '../../lib/media';
+import { formatDate } from '../../lib/format';
+
+// The body of a single film / book / album page. Order is deliberate: the
+// facts from the feed first (rating, review, watch history), then anything you
+// wrote in the overlay, then everything this connects to.
+
+interface Props {
+  item: MediaItem;
+  /** Rendered Markdown from the overlay note, if there is one. */
+  hasBody: boolean;
+}
+
+const { item, hasBody } = Astro.props;
+
+function stars(rating: number): string {
+  const full = Math.floor(rating);
+  return '★'.repeat(full) + (rating - full >= 0.5 ? '½' : '');
+}
+
+const watches = item.watches ?? [];
+const loggedWatches = watches.filter((w) => w.review || w.rating != null);
+
+// A rewatched film lists every entry below, so pulling the newest review up
+// into its own block would just print it twice. Books and albums have no watch
+// list at all, so their single review always gets the block.
+const showWatchList = loggedWatches.length > 1;
+const showSingleReview = Boolean(item.review) && !showWatchList;
+---
+
+<div class="media-detail">
+  <div class="media-detail-head">
+    {
+      item.coverUrl ? (
+        <img class="media-detail-cover" src={item.coverUrl} alt="" />
+      ) : (
+        <div class="media-detail-cover placeholder">{item.title}</div>
+      )
+    }
+
+    <div class="media-detail-facts">
+      {item.subtitle && <p class="media-detail-subtitle">{item.subtitle}</p>}
+      {item.rating != null && <p class="media-detail-rating">{stars(item.rating)}</p>}
+
+      <dl class="media-detail-dl">
+        {
+          item.date && (
+            <>
+              <dt>{item.kind === 'book' ? 'Read' : 'Watched'}</dt>
+              <dd>{formatDate(item.date)}</dd>
+            </>
+          )
+        }
+        {item.meta && (<><dt>Note</dt><dd>{item.meta}</dd></>)}
+        {item.pages && (<><dt>Length</dt><dd>{item.pages} pages</dd></>)}
+        {item.playcount != null && (<><dt>Plays</dt><dd>{item.playcount.toLocaleString()}</dd></>)}
+      </dl>
+
+      <a class="media-detail-external" href={item.externalUrl} target="_blank" rel="noopener noreferrer">
+        View on {item.externalLabel} &rarr;
+      </a>
+    </div>
+  </div>
+
+  {
+    showSingleReview && (
+      <section class="media-section">
+        <h2>What I said at the time</h2>
+        <blockquote class="media-review">{item.review}</blockquote>
+        <p class="media-source-note">Pulled from {item.externalLabel}.</p>
+      </section>
+    )
+  }
+
+  {
+    hasBody && (
+      <section class="media-section">
+        <h2>More thoughts</h2>
+        <div class="prose media-body">
+          <slot />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    showWatchList && (
+      <section class="media-section">
+        <h2>Every time I've watched it ({loggedWatches.length}×)</h2>
+        <ol class="media-watches">
+          {loggedWatches.map((watch) => (
+            <li>
+              <div class="media-watch-head">
+                {watch.watchedDate && <span class="media-watch-date">{watch.watchedDate}</span>}
+                {watch.rating != null && <span class="media-stars">{stars(watch.rating)}</span>}
+                {watch.rewatch && <span class="media-rewatch">rewatch</span>}
+              </div>
+              {watch.review && <p>{watch.review}</p>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    (item.recommendations.length > 0 || item.links.length > 0) && (
+      <section class="media-section">
+        <h2>Related</h2>
+        <ul class="media-related">
+          {item.recommendations.map((rec) => (
+            <li>
+              <a href={rec.href}>
+                <span class="media-related-kind">Recommendation</span>
+                <span class="media-related-title">
+                  {rec.title}
+                  {rec.rating && <span class="media-stars"> {stars(rec.rating)}</span>}
+                </span>
+                {rec.summary && <span class="media-related-summary">{rec.summary}</span>}
+              </a>
+            </li>
+          ))}
+          {item.links.map((link) => (
+            <li>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                <span class="media-related-kind">Link</span>
+                <span class="media-related-title">{link.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    !hasBody && (
+      <p class="media-add-hint">
+        Want to say more about this one? Drop a Markdown file at
+        <code>src/content/{item.kind === 'movie' ? 'movies' : item.kind === 'book' ? 'books' : 'albums'}/{item.slug}.md</code>
+        — or run <code>npm run new:{item.kind}</code> — and it shows up right here.
+      </p>
+    )
+  }
+</div>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 31">
+  <rect width="88" height="31" fill="#7a2f6b" stroke="#000" stroke-width="1"/>
+  <path d="M10 8 l1.6 3.4 3.7.5 -2.7 2.6 .7 3.7 -3.3-1.8 -3.3 1.8 .7-3.7 -2.7-2.6 3.7-.5z" fill="#ffd76b"/>
+  <text x="22" y="14" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#fff">HANDMADE</text>
+  <text x="22" y="24" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#ff66cc">no templates here</text>
+</svg>

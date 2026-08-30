@@ -1,3 +1,8 @@
+// `import type` is fully erased at build time, so pulling this in from the
+// build-only media module never drags its node:fs imports into the client
+// bundle — it just keeps one definition instead of two.
+import type { DietItem } from '../../lib/mediaDiet';
+
 export interface DesktopPost {
   slug: string;
   title: string;
@@ -6,6 +11,8 @@ export interface DesktopPost {
   dateLabel: string;
   href: string;
   coverImageSrc?: string;
+  /** Posted recently enough to earn the blinking NEW! tag. */
+  isNew: boolean;
 }
 
 export interface DesktopRecommendation {
@@ -19,6 +26,7 @@ export interface DesktopRecommendation {
   rating?: number;
   href: string;
   coverImageSrc?: string;
+  isNew: boolean;
 }
 
 export interface DesktopGoal {
@@ -44,9 +52,44 @@ export interface DesktopGalleryImage {
   dateLabel: string;
 }
 
+/** Everything the Currently window shows, fetched at build time. */
+export interface DesktopMediaDiet {
+  films: DietItem[];
+  finishedBooks: DietItem[];
+  readingNow: DietItem[];
+}
+
+/**
+ * A film/book/album row in the Movies, Books and Albums windows. Deliberately
+ * slimmer than lib/media.ts's MediaItem: this whole array is serialized into
+ * the page HTML as island props, and 190 books' worth of review text and
+ * publisher blurbs would bloat every page load for data the list never shows.
+ */
+export interface DesktopMediaItem {
+  slug: string;
+  title: string;
+  subtitle?: string;
+  coverUrl?: string;
+  rating?: number;
+  /** Sort key — epoch ms, 0 when the source has no date. */
+  sortDate: number;
+  dateLabel?: string;
+  meta?: string;
+  playcount?: number;
+  externalUrl: string;
+  /** Internal page href, or undefined when this item has no page of its own. */
+  href?: string;
+  /** True when there's a written note attached, so the list can flag it. */
+  hasNote: boolean;
+}
+
 export interface DesktopData {
   posts: DesktopPost[];
   recommendations: DesktopRecommendation[];
   months: DesktopMonth[];
   galleryImages: DesktopGalleryImage[];
+  mediaDiet: DesktopMediaDiet;
+  movies: DesktopMediaItem[];
+  books: DesktopMediaItem[];
+  albums: DesktopMediaItem[];
 }

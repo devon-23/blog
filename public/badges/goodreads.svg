@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 31">
+  <rect width="88" height="31" fill="#f4f1ea" stroke="#000" stroke-width="1"/>
+  <rect x="6" y="6" width="14" height="19" fill="#553b08" stroke="#2b1d04" stroke-width="1"/>
+  <rect x="6" y="6" width="4" height="19" fill="#8a6a24"/>
+  <text x="25" y="14" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#382110">READING</text>
+  <text x="25" y="24" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#7a5c3a">on Goodreads</text>
+</svg>

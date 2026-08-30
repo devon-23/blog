@@ -7,17 +7,46 @@ import { postHref, recommendationHref, recapHref, goalLogHref } from '../lib/pat
 import { formatDate, formatMonthLabel } from '../lib/format';
 import { CATEGORY_META } from '../data/categories';
 import { getAllGalleryImages } from '../lib/gallery';
-import type { DesktopData } from '../components/desktop/types';
+import { getMediaDiet } from '../lib/mediaDiet';
+import { getMediaLibrary, type MediaItem } from '../lib/media';
+import type { DesktopData, DesktopMediaItem } from '../components/desktop/types';
 
-const [posts, recommendations, monthKeys, goalEntries, galleryImages] = await Promise.all([
+const [posts, recommendations, monthKeys, goalEntries, galleryImages, mediaDiet, library] = await Promise.all([
   getAllPublishedPosts(),
   getAllPublishedRecommendations(),
   getAllMonthKeys(),
   getCollection('goals'),
   getAllGalleryImages(),
+  getMediaDiet(),
+  getMediaLibrary(),
 ]);
 
+// Trim each item down to what the list actually renders. The full MediaItem
+// carries review text and publisher blurbs, and 190 books' worth of that would
+// be serialized into every page load for data no list row ever shows.
+function toDesktopMedia(item: MediaItem): DesktopMediaItem {
+  return {
+    slug: item.slug,
+    title: item.title,
+    subtitle: item.subtitle,
+    coverUrl: item.coverUrl,
+    rating: item.rating,
+    sortDate: item.date?.getTime() ?? 0,
+    dateLabel: item.date ? formatDate(item.date) : undefined,
+    meta: item.meta,
+    playcount: item.playcount,
+    externalUrl: item.externalUrl,
+    href: item.hasPage ? item.href : undefined,
+    hasNote: Boolean(item.entry),
+  };
+}
+
 const goalsByMonth = new Map(goalEntries.map((g) => [g.data.month, g]));
+
+// Anything published in the last two weeks gets the blinking NEW! tag. Decided
+// here rather than in the browser so the tag can't flicker in after hydration.
+const NEW_WINDOW_MS = 1000 * 60 * 60 * 24 * 14;
+const isRecent = (date: Date) => Date.now() - date.getTime() < NEW_WINDOW_MS;
 
 const desktopPosts = posts.map((post) => ({
   slug: post.id,
@@ -27,6 +56,7 @@ const desktopPosts = posts.map((post) => ({
   dateLabel: formatDate(post.data.date),
   href: postHref(post),
   coverImageSrc: post.data.coverImage?.src,
+  isNew: isRecent(post.data.date),
 }));
 
 const desktopRecommendations = recommendations.map((rec) => {
@@ -42,6 +72,7 @@ const desktopRecommendations = recommendations.map((rec) => {
     rating: rec.data.rating,
     href: recommendationHref(rec),
     coverImageSrc: rec.data.coverImage?.src,
+    isNew: isRecent(rec.data.date),
   };
 });
 
@@ -76,6 +107,10 @@ const desktopData: DesktopData = {
   recommendations: desktopRecommendations,
   months: desktopMonths,
   galleryImages: desktopGalleryImages,
+  mediaDiet,
+  movies: library.movies.map(toDesktopMedia),
+  books: library.books.map(toDesktopMedia),
+  albums: library.albums.map(toDesktopMedia),
 };
 ---
 

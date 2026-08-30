@@ -2,9 +2,16 @@ import { useState } from 'react';
 import { useWindowStore } from './windowStore';
 import StartMenu from './StartMenu';
 import Clock from './Clock';
+import HitCounter from './HitCounter';
 import { withBase } from '../../lib/url';
 
-export default function Taskbar() {
+interface Props {
+  /** Whether the Now Playing gadget is on screen, so the tray button can toggle it. */
+  gadgetOpen: boolean;
+  onToggleGadget: () => void;
+}
+
+export default function Taskbar({ gadgetOpen, onToggleGadget }: Props) {
   const windows = useWindowStore((s) => s.windows);
   const focusWindow = useWindowStore((s) => s.focusWindow);
   const toggleMinimize = useWindowStore((s) => s.toggleMinimize);
@@ -42,7 +49,18 @@ export default function Taskbar() {
         })}
       </div>
 
-      <Clock />
+      <div className="taskbar-tray">
+        <HitCounter />
+        <button
+          className={`tray-button ${gadgetOpen ? 'active' : ''}`}
+          onClick={onToggleGadget}
+          title={gadgetOpen ? 'Hide Now Playing' : 'Show Now Playing'}
+          aria-pressed={gadgetOpen}
+        >
+          ♪
+        </button>
+        <Clock />
+      </div>
     </div>
   );
 }

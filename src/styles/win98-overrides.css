@@ -1,3 +1,19 @@
+/* ============ Y2K palette ============ */
+/* The 2003-glitter accent colors, kept in one place so the MySpace-flavored
+   surfaces (profile, currently, guestbook, marquee) stay consistent with each
+   other while the plain Win98 chrome stays grey. */
+
+:root {
+  --y2k-pink: #ff66cc;
+  --y2k-hot: #ff1f9c;
+  --y2k-cyan: #00e5ff;
+  --y2k-blue: #1084d0;
+  --y2k-purple: #7a2f6b;
+  --y2k-lilac: #f4f0fa;
+  --y2k-gold: #ffd76b;
+  --y2k-ink: #2b0b24;
+}
+
 /* ============ Desktop shell ============ */
 
 .desktop {
@@ -9,6 +25,59 @@
 
 .desktop[data-wallpaper='teal'] {
   background: #008080;
+}
+
+/* --- Starfield: the MySpace layout everyone had, five-point stars on cyan.
+   Real star shapes via inline SVG tiles rather than radial-gradient dots,
+   which read as polka dots at this size. --- */
+.desktop[data-wallpaper='stars'] {
+  background-color: #00c2e0;
+  background-image:
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='130'%3E%3Cpath d='M28 6l5.3 11.2L45 18.9l-8.5 8.6L38.6 40 28 34.1 17.4 40l2.1-12.5L11 18.9l11.7-1.7z' fill='%23ff1f9c'/%3E%3Cpath d='M110 74l3.7 7.8 8.1 1.2-5.9 6 1.4 8.7-7.3-4.1-7.3 4.1 1.4-8.7-5.9-6 8.1-1.2z' fill='%23b400ff'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='95' height='105'%3E%3Cpath d='M20 60l2.6 5.5 5.7.8-4.2 4.2 1 6.1-5.1-2.9-5.1 2.9 1-6.1-4.2-4.2 5.7-.8z' fill='%23ffffff'/%3E%3Cpath d='M70 14l2.2 4.6 4.8.7-3.5 3.5.8 5.1-4.3-2.4-4.3 2.4.8-5.1-3.5-3.5 4.8-.7z' fill='%23ffffff' opacity='.85'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #00c2e0, #0091d5);
+}
+
+/* --- Glitter: dense pink/gold sparkle tile --- */
+.desktop[data-wallpaper='glitter'] {
+  background-color: #2b0b24;
+  background-image:
+    radial-gradient(circle at 10% 20%, var(--y2k-gold) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 40% 60%, var(--y2k-pink) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 70% 15%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 85% 80%, var(--y2k-cyan) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 25% 90%, var(--y2k-pink) 0 1px, transparent 2px),
+    radial-gradient(circle at 60% 35%, #fff 0 1px, transparent 2px),
+    linear-gradient(135deg, #3d0f33, #170618 60%, #2b0b24);
+  background-size: 44px 44px, 62px 62px, 38px 38px, 70px 70px, 52px 52px, 30px 30px, 100% 100%;
+}
+
+/* --- Checkers: the tiled two-tone every Geocities page shipped with --- */
+.desktop[data-wallpaper='checker'] {
+  background-color: #ff66cc;
+  background-image:
+    linear-gradient(45deg, rgba(0, 0, 0, 0.18) 25%, transparent 25% 75%, rgba(0, 0, 0, 0.18) 75%),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.18) 25%, transparent 25% 75%, rgba(0, 0, 0, 0.18) 75%);
+  background-size: 48px 48px;
+  background-position:
+    0 0,
+    24px 24px;
+}
+
+/* --- Y2K: the chrome-gradient frutiger-aura look --- */
+.desktop[data-wallpaper='y2k'] {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(255, 255, 255, 0.55), transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(0, 229, 255, 0.6), transparent 60%),
+    linear-gradient(160deg, #b06bff 0%, #ff66cc 35%, #ffb36b 65%, #00e5ff 100%);
+}
+
+/* --- Matrix: falling green rain, the other 1999 aesthetic --- */
+.desktop[data-wallpaper='matrix'] {
+  background-color: #000;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0, 255, 65, 0.14) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(90deg, rgba(0, 255, 65, 0.09) 0 1px, transparent 1px 14px);
 }
 
 .desktop[data-wallpaper='clouds'] {
@@ -1089,14 +1158,15 @@
 }
 
 .wallpaper-swatches {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   margin-bottom: 14px;
 }
 
 .wallpaper-swatch {
-  width: 84px;
-  height: 60px;
+  width: 100%;
+  height: 52px;
   border: 2px solid #808080;
   box-shadow: none;
   min-width: 0;
@@ -1139,6 +1209,40 @@
     repeating-linear-gradient(-45deg, #005500 0 2px, transparent 2px 10px);
 }
 
+.wallpaper-swatch-stars {
+  background-color: #00c2e0;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='36'%3E%3Cpath d='M12 4l2.6 5.5 5.7.8-4.2 4.2 1 6.1L12 17.7 6.9 20.6l1-6.1-4.2-4.2 5.7-.8z' fill='%23ff1f9c'/%3E%3Cpath d='M30 22l1.6 3.3 3.4.5-2.5 2.5.6 3.6L30 30.2 26.9 31.9l.6-3.6-2.5-2.5 3.4-.5z' fill='%23fff'/%3E%3C/svg%3E");
+}
+
+.wallpaper-swatch-glitter {
+  background-color: #2b0b24;
+  background-image:
+    radial-gradient(circle at 20% 25%, var(--y2k-gold) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 60% 65%, var(--y2k-pink) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 80% 30%, #fff 0 1px, transparent 2px);
+  background-size: 22px 22px, 30px 30px, 18px 18px;
+}
+
+.wallpaper-swatch-checker {
+  background-color: #ff66cc;
+  background-image:
+    linear-gradient(45deg, rgba(0, 0, 0, 0.18) 25%, transparent 25% 75%, rgba(0, 0, 0, 0.18) 75%),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.18) 25%, transparent 25% 75%, rgba(0, 0, 0, 0.18) 75%);
+  background-size: 20px 20px;
+  background-position:
+    0 0,
+    10px 10px;
+}
+
+.wallpaper-swatch-y2k {
+  background: linear-gradient(160deg, #b06bff 0%, #ff66cc 35%, #ffb36b 65%, #00e5ff 100%);
+}
+
+.wallpaper-swatch-matrix {
+  background-color: #000;
+  background-image: repeating-linear-gradient(0deg, rgba(0, 255, 65, 0.3) 0 2px, transparent 2px 5px);
+}
+
 .display-props-ok {
   display: block;
   margin-left: auto;
@@ -1146,12 +1250,14 @@
 
 /* ============ Desktop badge strip ============ */
 
+/* Laid out as a row along the bottom edge, stopping short of the Now Playing
+   gadget's 268px column so the two never overlap. */
 .desktop-badge-strip {
   position: absolute;
-  right: 14px;
+  right: 296px;
   bottom: 14px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 6px;
   z-index: 1;
 }
@@ -1160,35 +1266,6 @@
   image-rendering: pixelated;
   display: block;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
-}
-
-/* ============ Cursor trail ============ */
-
-.cursor-trail-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999999;
-  overflow: hidden;
-}
-
-.cursor-trail-dot {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  margin-left: -3px;
-  margin-top: -3px;
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  opacity: 1;
-  transform: scale(1);
-  transition:
-    opacity 0.6s linear,
-    transform 0.6s ease-out;
-}
-
-.cursor-trail-dot.fade {
-  opacity: 0;
-  transform: scale(0.3) translateY(10px);
 }
 
 /* ============ Gallery app ============ */
@@ -1291,5 +1368,1586 @@
 
   .desktop-badge-strip {
     display: none;
+  }
+}
+
+/* ==========================================================================
+   Y2K / MySpace layer
+   Everything below is the 2003 flavor: the desktop marquee, the Now Playing
+   gadget, and the three loud windows (Profile, Currently, Guestbook). It sits
+   on top of 98.css rather than replacing it, so the plain document pages keep
+   their grey chrome and stay readable.
+   ========================================================================== */
+
+/* ---- Shared glitter accents ---- */
+
+.glitter-text {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  /* No pure-white stops: these headings sit on white card backgrounds, and a
+     white phase of the sweep would make the word vanish mid-animation. */
+  background: linear-gradient(
+    90deg,
+    var(--y2k-purple) 0%,
+    var(--y2k-hot) 25%,
+    #d38f00 50%,
+    #0090a8 75%,
+    var(--y2k-purple) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.45);
+  animation: glitter-slide 6s linear infinite;
+}
+
+@keyframes glitter-slide {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* A tiled sparkle strip standing in for the animated .gif divider. */
+.glitter-rule {
+  height: 6px;
+  border: none;
+  margin: 14px 0;
+  background-image:
+    radial-gradient(circle at 6px 3px, var(--y2k-gold) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 14px 3px, var(--y2k-pink) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 22px 3px, var(--y2k-cyan) 0 1.5px, transparent 2px);
+  background-size: 28px 6px;
+  background-repeat: repeat-x;
+}
+
+/* The "NEW!" tag that blinked next to fresh links on every 1999 index page. */
+.new-tag {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 0 3px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 9px;
+  font-weight: bold;
+  color: #fff;
+  background: var(--y2k-hot);
+  border: 1px solid #7a0048;
+  vertical-align: middle;
+  animation: blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.live-tag {
+  margin-left: 6px;
+  padding: 0 4px;
+  font-size: 9px;
+  color: #fff;
+  background: #cc0000;
+  border-radius: 2px;
+  animation: blink 1.4s steps(2, start) infinite;
+}
+
+/* ---- Desktop marquee ticker ---- */
+
+.marquee-ticker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  z-index: 5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg, #1a0033, #3d0f33);
+  border-bottom: 2px ridge var(--y2k-pink);
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  color: var(--y2k-gold);
+  text-shadow: 0 0 5px rgba(255, 102, 204, 0.9);
+  pointer-events: none;
+}
+
+.marquee-ticker.live {
+  color: #7dff9b;
+  border-bottom-color: #7dff9b;
+}
+
+.marquee-track {
+  display: flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-scroll 48s linear infinite;
+}
+
+.marquee-track span {
+  padding-right: 2rem;
+}
+
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* The icon grid starts below the ticker rather than under it. */
+.desktop-icons {
+  padding-top: 32px;
+}
+
+/* ---- Now Playing gadget ---- */
+
+.np-gadget {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 268px;
+  z-index: 400;
+  background: silver;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #dfdfdf,
+    inset -2px -2px grey,
+    inset 2px 2px #fff;
+  padding: 3px;
+}
+
+.np-gadget.live {
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #dfdfdf,
+    inset -2px -2px grey,
+    inset 2px 2px #fff,
+    0 0 0 2px var(--y2k-hot),
+    0 0 14px rgba(255, 31, 156, 0.65);
+}
+
+.np-gadget-bar {
+  background: linear-gradient(90deg, #7a2f6b, #ff1f9c 70%, #ffb3e0);
+}
+
+.np-gadget:not(.live) .np-gadget-bar {
+  background: linear-gradient(90deg, #4a4a6a, #808098);
+}
+
+.np-gadget-blink {
+  color: #7dff9b;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+.np-gadget-body {
+  padding: 8px;
+  background: linear-gradient(180deg, #fff, var(--y2k-lilac));
+}
+
+.np-gadget-loading {
+  margin: 0;
+  font-size: 11px;
+  color: #555;
+}
+
+.np-gadget-main {
+  display: flex;
+  gap: 9px;
+}
+
+.np-gadget-art {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+  border: 1px solid #555;
+  overflow: hidden;
+  display: block;
+  background: #1c150f;
+}
+
+.np-gadget-art img,
+.np-gadget-art-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Spins like a record only while something is actually playing. */
+.np-gadget-art.spinning {
+  border-radius: 50%;
+}
+
+.np-gadget-art.spinning img,
+.np-gadget-art.spinning .np-gadget-art-fallback {
+  animation: gadget-spin 4s linear infinite;
+}
+
+.np-gadget-spindle {
+  display: none;
+}
+
+.np-gadget-art.spinning .np-gadget-spindle {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--y2k-lilac);
+  border: 1px solid #333;
+}
+
+@keyframes gadget-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.np-gadget-meta {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.np-gadget-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--y2k-ink);
+}
+
+/* Only scroll the title when it's the live track; a static last-played line
+   reading itself over and over is just noise. */
+.np-gadget-marquee .scrolling {
+  display: inline-block;
+  padding-left: 100%;
+  animation: gadget-marquee 12s linear infinite;
+}
+
+@keyframes gadget-marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.np-gadget-status {
+  font-size: 10px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.np-gadget-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #999;
+  border: 1px solid #666;
+}
+
+.np-gadget-dot.on {
+  background: #29d94a;
+  border-color: #0a7a20;
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  50% {
+    box-shadow: 0 0 0 4px rgba(41, 217, 74, 0.25);
+  }
+}
+
+.np-gadget-progress {
+  height: 9px;
+  background: #fff;
+  box-shadow:
+    inset 1px 1px grey,
+    inset -1px -1px #fff;
+  overflow: hidden;
+}
+
+.np-gadget-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--y2k-hot) 0 5px, transparent 5px 7px);
+  transition: width 1s linear;
+}
+
+.np-gadget-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #555;
+  font-variant-numeric: tabular-nums;
+}
+
+.np-gadget-recent {
+  margin-top: 8px;
+  font-size: 10px;
+}
+
+.np-gadget-recent summary {
+  cursor: pointer;
+  color: var(--y2k-purple);
+}
+
+.np-gadget-recent ul {
+  list-style: none;
+  margin: 5px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.np-gadget-recent li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #444;
+}
+
+.np-gadget-recent i {
+  color: #888;
+}
+
+.np-gadget-link {
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+  text-align: right;
+  color: var(--y2k-purple);
+}
+
+.np-gadget.collapsed {
+  width: 200px;
+}
+
+/* ---- Taskbar tray ---- */
+
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.tray-button {
+  min-width: 0;
+  min-height: 0;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tray-button.active {
+  color: var(--y2k-hot);
+}
+
+.hit-counter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 9px;
+  color: #333;
+}
+
+.hit-counter-label {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hit-counter-digits {
+  display: flex;
+  gap: 1px;
+}
+
+.hit-digit {
+  background: #000;
+  color: #29d94a;
+  padding: 1px 2px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: bold;
+  border: 1px solid #444;
+}
+
+/* ---- Profile window (MySpace) ---- */
+
+.profile-app {
+  font-family: Verdana, Geneva, Arial, sans-serif;
+  font-size: 12px;
+  color: var(--y2k-ink);
+  background: linear-gradient(180deg, #fff, var(--y2k-lilac));
+  padding: 10px;
+}
+
+.profile-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px;
+  margin-bottom: 12px;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.35) 0 2px, transparent 3px) repeat 0 0 / 40px 40px,
+    linear-gradient(90deg, var(--y2k-purple), var(--y2k-hot) 55%, var(--y2k-cyan));
+  border: 2px ridge var(--y2k-pink);
+}
+
+.profile-tagline {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.profile-columns {
+  display: grid;
+  grid-template-columns: 175px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-pic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.profile-pic-inner {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--y2k-cyan), var(--y2k-pink));
+  border: 3px double #fff;
+  outline: 1px solid var(--y2k-purple);
+}
+
+.profile-pic-caption {
+  font-size: 10px;
+  color: #666;
+}
+
+/* Two overrides of 98.css are load-bearing here. It sets `table{white-space:
+   nowrap}` for its spreadsheet-style tables, which stops these cells wrapping
+   and spills long book titles straight out of the window; and `table-layout`
+   must be fixed so a long value can't widen the column past its track. Both
+   are needed — `fixed` alone can't wrap text that is forbidden from wrapping. */
+.profile-contact,
+.profile-interests {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 11px;
+  white-space: normal;
+}
+
+/* 98.css also pins `table>tbody>tr>*` to height:14px / padding:0 6px, which
+   crushes a wrapped multi-line cell. */
+.profile-contact > tbody > tr > *,
+.profile-interests > tbody > tr > * {
+  height: auto;
+  white-space: normal;
+}
+
+.profile-contact th,
+.profile-interests th {
+  background: var(--y2k-purple);
+  color: #fff;
+  text-align: left;
+  padding: 3px 5px;
+  vertical-align: top;
+  font-weight: normal;
+  width: 62px;
+  overflow-wrap: break-word;
+}
+
+.profile-contact td,
+.profile-interests td {
+  background: #fff;
+  padding: 3px 5px;
+  border: 1px solid #ddd;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* The interests labels are short; give their values the rest of the row. */
+.profile-interests th {
+  width: 54px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #29d94a;
+  border: 1px solid #0a7a20;
+}
+
+.profile-cta {
+  width: 100%;
+  padding: 5px;
+  cursor: pointer;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+}
+
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-box {
+  border: 1px solid var(--y2k-pink);
+  background: #fff;
+}
+
+.profile-box h3 {
+  margin: 0;
+  padding: 4px 8px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 12px;
+  color: #fff;
+  background: linear-gradient(90deg, var(--y2k-hot), var(--y2k-purple));
+}
+
+.profile-box p,
+.profile-box table,
+.profile-box ul {
+  margin: 8px;
+}
+
+.profile-box p {
+  line-height: 1.5;
+}
+
+.top-friends {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.top-friends a,
+.top-friends span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.friend-tile {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--y2k-blue), var(--y2k-purple));
+  border: 2px solid #fff;
+  outline: 1px solid #999;
+}
+
+.top-friends a:hover .friend-tile {
+  background: linear-gradient(135deg, var(--y2k-hot), var(--y2k-gold));
+}
+
+.friend-name {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.friend-blurb {
+  font-size: 9px;
+  color: #777;
+  line-height: 1.3;
+}
+
+.profile-elsewhere {
+  padding-left: 18px;
+  line-height: 1.7;
+}
+
+/* ---- Currently window ---- */
+
+.currently-app {
+  font-family: Verdana, Geneva, Arial, sans-serif;
+  font-size: 12px;
+  color: var(--y2k-ink);
+  background: linear-gradient(180deg, #fff, var(--y2k-lilac));
+  padding: 10px;
+}
+
+.currently-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.currently-sub {
+  font-size: 10px;
+  color: #777;
+}
+
+.currently-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  gap: 10px;
+}
+
+.currently-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #c9a9d4;
+  background: #fff;
+  padding-bottom: 4px;
+}
+
+.currently-card.live {
+  border-color: var(--y2k-hot);
+  box-shadow: 0 0 8px rgba(255, 31, 156, 0.35);
+}
+
+.currently-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 8px;
+  padding: 4px 7px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  color: #fff;
+  background: linear-gradient(90deg, var(--y2k-purple), var(--y2k-hot));
+}
+
+.currently-icon {
+  font-size: 13px;
+}
+
+.currently-body {
+  display: flex;
+  gap: 9px;
+  padding: 0 8px;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.currently-body:hover .currently-text b {
+  color: var(--y2k-hot);
+}
+
+.currently-art {
+  flex-shrink: 0;
+  border: 1px solid #777;
+  background: #eee;
+  overflow: hidden;
+}
+
+.currently-art.square {
+  width: 62px;
+  height: 62px;
+}
+
+.currently-art.poster {
+  width: 58px;
+  height: 86px;
+}
+
+.currently-art img,
+.currently-art-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.currently-art.pulsing {
+  animation: art-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes art-pulse {
+  50% {
+    box-shadow: 0 0 10px rgba(255, 31, 156, 0.8);
+  }
+}
+
+.currently-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 11px;
+}
+
+.currently-text b {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.currently-text .dim {
+  color: #777;
+}
+
+.rating-stars {
+  color: #d38f00;
+  letter-spacing: 0.06em;
+}
+
+.currently-meta {
+  font-size: 10px;
+  color: #888;
+}
+
+.currently-review {
+  font-size: 10px;
+  color: #555;
+  font-style: italic;
+  line-height: 1.35;
+  margin-top: 3px;
+}
+
+.currently-footnote {
+  margin: 6px 8px 0;
+  font-size: 10px;
+  color: #666;
+}
+
+.currently-source {
+  margin: 6px 8px 0;
+  font-size: 10px;
+  text-align: right;
+  color: var(--y2k-purple);
+}
+
+.currently-strip-title {
+  margin: 0 0 7px;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--y2k-purple);
+}
+
+.currently-strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.currently-strip li {
+  flex-shrink: 0;
+}
+
+.currently-strip a {
+  display: block;
+  width: 62px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.currently-strip img {
+  width: 62px;
+  height: 92px;
+  object-fit: cover;
+  border: 1px solid #777;
+  display: block;
+}
+
+.currently-strip a:hover img {
+  border-color: var(--y2k-hot);
+  box-shadow: 0 0 6px rgba(255, 31, 156, 0.6);
+}
+
+.poster-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 92px;
+  padding: 4px;
+  font-size: 9px;
+  background: #ddd;
+  border: 1px solid #777;
+  text-align: center;
+}
+
+.currently-strip-rating {
+  display: block;
+  font-size: 10px;
+  color: #d38f00;
+}
+
+/* ---- Guestbook ---- */
+
+.guestbook-app {
+  font-family: Verdana, Geneva, Arial, sans-serif;
+  font-size: 12px;
+  color: var(--y2k-ink);
+  background: linear-gradient(180deg, #fff, var(--y2k-lilac));
+  padding: 10px;
+}
+
+.guestbook-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.guestbook-note {
+  font-size: 10px;
+  color: #777;
+  max-width: 34ch;
+  line-height: 1.4;
+}
+
+.guestbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid var(--y2k-pink);
+  background: #fff;
+}
+
+.guestbook-form .field-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.guestbook-form label {
+  width: 42px;
+  font-size: 11px;
+}
+
+.guestbook-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.guestbook-form textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.guestbook-moods {
+  align-items: flex-start;
+}
+
+.mood-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.mood-btn {
+  min-width: 0;
+  min-height: 0;
+  padding: 2px 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.mood-btn.selected {
+  background: var(--y2k-pink);
+  color: #fff;
+}
+
+.guestbook-submit {
+  align-self: flex-end;
+  padding: 4px 14px;
+  cursor: pointer;
+}
+
+.guestbook-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guestbook-entries li {
+  border: 1px solid #d8c4e0;
+  background: #fff;
+  padding: 7px 9px;
+}
+
+.gb-entry-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.gb-mood {
+  color: var(--y2k-hot);
+}
+
+.gb-date {
+  margin-left: auto;
+  font-size: 10px;
+  color: #999;
+}
+
+.guestbook-entries p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* ---- Motion & narrow-viewport fallbacks ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .np-gadget-marquee .scrolling,
+  .np-gadget-art.spinning img,
+  .np-gadget-art.spinning .np-gadget-art-fallback,
+  .glitter-text,
+  .new-tag,
+  .live-tag,
+  .np-gadget-blink,
+  .np-gadget-dot.on,
+  .currently-art.pulsing {
+    animation: none;
+  }
+
+  /* Without the slide the gradient text would be a flat mid-tone — pin it to
+     a legible solid instead. */
+  .glitter-text {
+    background: none;
+    -webkit-text-fill-color: var(--y2k-purple);
+    color: var(--y2k-purple);
+    -webkit-text-stroke: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .np-gadget {
+    display: none;
+  }
+
+  .profile-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .top-friends {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hit-counter {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Media library — the Movies / Books / Albums windows and pages
+   ========================================================================== */
+
+/* ---- The in-window list (MediaListApp) ---- */
+
+.media-app {
+  padding: 8px;
+  background: linear-gradient(180deg, #fff, var(--y2k-lilac));
+  font-family: Verdana, Geneva, Arial, sans-serif;
+}
+
+.media-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.media-search {
+  flex: 1;
+  min-width: 110px;
+}
+
+.media-filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* 98.css hides the real checkbox and draws it on the label's ::before, which
+   only works for the `input + label` pairing it expects. These are wrapped in
+   the label instead, so show the native control. */
+.media-filter input[type='checkbox'] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  position: static;
+  opacity: 1;
+  margin: 0;
+}
+
+.media-count {
+  margin: 0 0 8px;
+  font-size: 10px;
+  color: #777;
+}
+
+.media-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+.media-grid a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.media-cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 2 / 3;
+  border: 1px solid #777;
+  background: #ddd;
+  overflow: hidden;
+}
+
+.media-grid a:hover .media-cover {
+  border-color: var(--y2k-hot);
+  box-shadow: 0 0 6px rgba(255, 31, 156, 0.6);
+}
+
+.media-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.media-cover-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 4px;
+  font-size: 9px;
+  text-align: center;
+  color: #555;
+}
+
+.media-note-flag {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+  background: var(--y2k-hot);
+  border: 1px solid #7a0048;
+}
+
+.media-title {
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.25;
+}
+
+.media-subtitle {
+  font-size: 10px;
+  color: #777;
+}
+
+.media-meta {
+  font-size: 10px;
+  color: #888;
+}
+
+.media-stars {
+  color: #d38f00;
+}
+
+/* Albums are square, not poster-shaped. */
+.media-app .media-grid li.album .media-cover {
+  aspect-ratio: 1;
+}
+
+.media-index-link {
+  display: block;
+  margin-top: 12px;
+  font-size: 11px;
+  text-align: right;
+  color: var(--y2k-purple);
+}
+
+/* ---- The static index pages (MediaIndex.astro) ---- */
+
+.mi-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: #f7f5fb;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+}
+
+.mi-controls label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mi-check input[type='checkbox'] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  position: static;
+  opacity: 1;
+  margin: 0;
+}
+
+.mi-count {
+  margin-left: auto;
+  color: #666;
+}
+
+.mi-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 14px;
+}
+
+.mi-grid a {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.mi-grid img,
+.mi-cover-fallback {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 1px solid #888;
+  display: block;
+  background: #eee;
+}
+
+.mi-cover-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  font-size: 11px;
+  text-align: center;
+  color: #555;
+}
+
+/* Album art is square; posters and book covers are not. */
+.mi-grid.square img,
+.mi-grid.square .mi-cover-fallback {
+  aspect-ratio: 1;
+}
+
+.mi-grid a:hover img,
+.mi-grid a:hover .mi-cover-fallback {
+  border-color: var(--y2k-hot);
+  box-shadow: 0 0 8px rgba(255, 31, 156, 0.5);
+}
+
+.mi-title {
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.mi-subtitle {
+  font-size: 11px;
+  color: #777;
+}
+
+.mi-meta {
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mi-stars {
+  color: #d38f00;
+}
+
+.mi-note-flag {
+  color: var(--y2k-hot);
+}
+
+.mi-empty {
+  padding: 20px;
+  text-align: center;
+  color: #777;
+}
+
+/* ---- A single media page (MediaDetail.astro) ---- */
+
+.media-detail-head {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.media-detail-cover {
+  width: 150px;
+  flex-shrink: 0;
+  border: 1px solid #888;
+  display: block;
+  height: auto;
+}
+
+.media-detail-cover.placeholder {
+  aspect-ratio: 2 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  background: #eee;
+  color: #666;
+  font-size: 12px;
+}
+
+.media-detail-facts {
+  min-width: 0;
+}
+
+.media-detail-subtitle {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #555;
+}
+
+.media-detail-rating {
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #d38f00;
+  letter-spacing: 0.05em;
+}
+
+.media-detail-dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 3px 14px;
+  margin: 0 0 14px;
+  font-size: 13px;
+}
+
+.media-detail-dl dt {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7a2f6b;
+  padding-top: 2px;
+}
+
+.media-detail-dl dd {
+  margin: 0;
+}
+
+.media-detail-external {
+  font-size: 12px;
+}
+
+.media-section {
+  margin: 0 0 26px;
+}
+
+.media-section h2 {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--y2k-purple);
+  border-bottom: 2px solid var(--y2k-pink);
+  padding-bottom: 4px;
+  margin: 0 0 12px;
+}
+
+.media-review {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--y2k-pink);
+  background: #faf8fd;
+  font-size: 14px;
+  line-height: 1.6;
+  /* Reviews arrive as plain text with real newlines, not markup. */
+  white-space: pre-line;
+}
+
+.media-source-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #999;
+}
+
+.media-watches {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+}
+
+.media-watches li {
+  margin-bottom: 12px;
+}
+
+.media-watch-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+}
+
+.media-watch-date {
+  color: #666;
+}
+
+.media-rewatch {
+  font-size: 10px;
+  padding: 0 4px;
+  background: #eee;
+  border: 1px solid #ccc;
+  color: #666;
+}
+
+.media-watches p {
+  margin: 4px 0 0;
+  white-space: pre-line;
+}
+
+.media-related {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.media-related a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  background: linear-gradient(180deg, #fff, #f7f5fb);
+  text-decoration: none;
+  color: inherit;
+}
+
+.media-related a:hover {
+  border-color: var(--y2k-hot);
+  background: linear-gradient(180deg, #fff, #ffe9f7);
+}
+
+.media-related-kind {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--y2k-purple);
+}
+
+.media-related-title {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.media-related-summary {
+  font-size: 12px;
+  color: #666;
+}
+
+.media-add-hint {
+  margin-top: 24px;
+  padding: 10px 12px;
+  border: 1px dashed #bbb;
+  background: #fafafa;
+  font-size: 11px;
+  color: #777;
+}
+
+.media-add-hint code {
+  background: #fff;
+  padding: 0 3px;
+}
+
+@media (max-width: 560px) {
+  .media-detail-head {
+    flex-direction: column;
+  }
+
+  .media-detail-cover {
+    width: 120px;
+  }
+}
+
+/* ==========================================================================
+   Document windows — an article/film/book opened in place on the desktop
+   The markup inside is lifted straight from the page's own `.doc-body`, so
+   these rules mirror the equivalents in DocumentLayout.astro.
+   ========================================================================== */
+
+.doc-window {
+  padding: 18px 20px 22px;
+  background: #fff;
+  height: 100%;
+  overflow: auto;
+}
+
+.doc-window .doc-kicker {
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555;
+  margin: 0 0 4px;
+}
+
+.doc-window .doc-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+
+.doc-window .doc-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  border: 1px solid #999;
+  margin-bottom: 16px;
+}
+
+.doc-window .doc-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #ccc;
+}
+
+.doc-window .doc-gallery img {
+  width: 100%;
+  height: 96px;
+  object-fit: cover;
+  border: 1px solid #999;
+  display: block;
+}
+
+/* The detail view is laid out for a full page; tighten it for a window. */
+.doc-window .media-detail-cover {
+  width: 116px;
+}
+
+.doc-window .media-detail-head {
+  gap: 14px;
+}
+
+.doc-window .media-detail-rating {
+  font-size: 18px;
+}
+
+.doc-window .prose {
+  font-size: 13px;
+}
+
+.doc-window-permalink {
+  margin: 24px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .doc-window {
+    padding: 14px;
   }
 }

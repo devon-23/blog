@@ -2,8 +2,10 @@
 // request shape, restyled for Win98 chrome instead of Spinning's vinyl theme.
 // Locked to a single Last.fm account per this site's scope (no visitor lookup).
 
-export const LASTFM_USER = 'devonbarks';
-const API_KEY = '092d316884d8385f35ad8b84f5f42ef8';
+import { PROFILES } from '../../data/profiles';
+
+export const LASTFM_USER = PROFILES.lastfm.user;
+const API_KEY = PROFILES.lastfm.apiKey;
 const API_BASE = 'https://ws.audioscrobbler.com/2.0/';
 const PLACEHOLDER_HASH = '2a96cbd8b46e442fc41c2b86b821562';
 

@@ -3,7 +3,8 @@ import { useWindowStore } from './windowStore';
 import Win98Window from './Win98Window';
 import DesktopIcons from './DesktopIcons';
 import Taskbar from './Taskbar';
-import CursorTrail from './CursorTrail';
+import NowPlayingGadget from './NowPlayingGadget';
+import MarqueeTicker from './MarqueeTicker';
 import type { DesktopData } from './types';
 import PostListApp from '../apps/PostListApp';
 import RecommendationsApp from '../apps/RecommendationsApp';
@@ -13,6 +14,11 @@ import HistoryApp from '../apps/HistoryApp';
 import AboutApp from '../apps/AboutApp';
 import SearchApp from '../apps/SearchApp';
 import LinksApp from '../apps/LinksApp';
+import CurrentlyApp from '../apps/CurrentlyApp';
+import MediaListApp from '../apps/MediaListApp';
+import DocumentWindowApp from '../apps/DocumentWindowApp';
+import ProfileApp from '../apps/ProfileApp';
+import GuestbookApp from '../apps/GuestbookApp';
 import MusicApp from '../music/MusicApp';
 import { withBase } from '../../lib/url';
 import { BADGES } from '../../data/badges';
@@ -25,22 +31,30 @@ const WALLPAPERS = [
   { id: 'teal', label: 'Teal' },
   { id: 'clouds', label: 'Clouds' },
   { id: 'maze', label: 'Maze' },
+  { id: 'stars', label: 'Starfield' },
+  { id: 'glitter', label: 'Glitter' },
+  { id: 'checker', label: 'Checkers' },
+  { id: 'y2k', label: 'Y2K' },
+  { id: 'matrix', label: 'Matrix' },
 ];
 
 const WALLPAPER_STORAGE_KEY = 'devon98-wallpaper';
+const GADGET_STORAGE_KEY = 'devon98-npgadget';
 
 export default function Desktop({ data }: Props) {
   const windows = useWindowStore((s) => s.windows);
-  const [wallpaper, setWallpaper] = useState('teal');
+  const [wallpaper, setWallpaper] = useState('stars');
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const [displayPropsOpen, setDisplayPropsOpen] = useState(false);
+  const [gadgetOpen, setGadgetOpen] = useState(true);
 
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(WALLPAPER_STORAGE_KEY);
       if (stored) setWallpaper(stored);
+      setGadgetOpen(window.localStorage.getItem(GADGET_STORAGE_KEY) !== 'closed');
     } catch {
-      // localStorage unavailable — just keep the default.
+      // localStorage unavailable — just keep the defaults.
     }
   }, []);
 
@@ -53,15 +67,37 @@ export default function Desktop({ data }: Props) {
     }
   }
 
+  function toggleGadget() {
+    setGadgetOpen((open) => {
+      const next = !open;
+      try {
+        window.localStorage.setItem(GADGET_STORAGE_KEY, next ? 'open' : 'closed');
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  }
+
   function handleDesktopContextMenu(e: MouseEvent) {
     const target = e.target as HTMLElement;
-    if (target.closest('.window, .desktop-icon, .taskbar, .start-menu')) return;
+    if (target.closest('.window, .desktop-icon, .taskbar, .start-menu, .np-gadget')) return;
     e.preventDefault();
     setContextMenu({ x: e.clientX, y: e.clientY });
   }
 
   function renderAppContent(appId: string) {
     switch (appId) {
+      case 'profile':
+        return <ProfileApp diet={data.mediaDiet} />;
+      case 'currently':
+        return <CurrentlyApp diet={data.mediaDiet} />;
+      case 'movies':
+        return <MediaListApp items={data.movies} kind="movie" indexHref={withBase('/movies/')} />;
+      case 'books':
+        return <MediaListApp items={data.books} kind="book" indexHref={withBase('/books/')} />;
+      case 'albums':
+        return <MediaListApp items={data.albums} kind="album" indexHref={withBase('/albums/')} />;
       case 'music':
         return <MusicApp />;
       case 'articles':
@@ -82,6 +118,8 @@ export default function Desktop({ data }: Props) {
         return <SearchApp />;
       case 'links':
         return <LinksApp linksHref={withBase('/links/')} />;
+      case 'guestbook':
+        return <GuestbookApp />;
       case 'about':
         return <AboutApp aboutHref={withBase('/about/')} />;
       default:
@@ -91,11 +129,11 @@ export default function Desktop({ data }: Props) {
 
   return (
     <div className="desktop" data-wallpaper={wallpaper} onContextMenu={handleDesktopContextMenu}>
-      <CursorTrail />
+      <MarqueeTicker data={data} />
       <DesktopIcons />
 
       <div className="desktop-badge-strip">
-        {BADGES.slice(0, 2).map((badge) => (
+        {BADGES.slice(0, 3).map((badge) => (
           <a key={badge.id} href={badge.href} target="_blank" rel="noopener noreferrer">
             <img src={withBase(badge.src)} alt={badge.alt} width={88} height={31} />
           </a>
@@ -104,9 +142,11 @@ export default function Desktop({ data }: Props) {
 
       {windows.map((win) => (
         <Win98Window key={win.id} win={win}>
-          {renderAppContent(win.appId)}
+          {win.docUrl ? <DocumentWindowApp url={win.docUrl} windowId={win.id} /> : renderAppContent(win.appId)}
         </Win98Window>
       ))}
+
+      {gadgetOpen && <NowPlayingGadget onClose={toggleGadget} />}
 
       {contextMenu && (
         <>
@@ -120,6 +160,16 @@ export default function Desktop({ data }: Props) {
                 }}
               >
                 Properties...
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  toggleGadget();
+                  setContextMenu(null);
+                }}
+              >
+                {gadgetOpen ? 'Hide Now Playing' : 'Show Now Playing'}
               </button>
             </li>
           </ul>
@@ -156,7 +206,7 @@ export default function Desktop({ data }: Props) {
         </div>
       )}
 
-      <Taskbar />
+      <Taskbar gadgetOpen={gadgetOpen} onToggleGadget={toggleGadget} />
     </div>
   );
 }

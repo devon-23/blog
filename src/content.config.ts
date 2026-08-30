@@ -69,4 +69,38 @@ const goalLogs = defineCollection({
     }),
 });
 
-export const collections = { posts, recommendations, goals, goalLogs };
+// Overlays on top of Letterboxd / Goodreads / Last.fm data. The FILENAME is
+// the join key: `src/content/movies/a-real-pain.md` attaches to the film whose
+// Letterboxd slug is `a-real-pain`. Everything here is optional — a film or
+// book still gets a page from feed data alone. This is only for what you want
+// to add on top, and because it lives in git it survives every refetch.
+//
+// Scaffold one with `npm run new:movie` / `new:book` / `new:album`, which
+// looks the slug up for you rather than making you guess it.
+const mediaNoteSchema = ({ image }: { image: () => any }) =>
+  z.object({
+    // Overrides the feed's title on the page. Rarely needed.
+    title: z.string().optional(),
+    // Extra "related" links shown alongside the auto-matched recommendations.
+    links: z.array(z.object({ label: z.string(), href: z.string().url() })).default([]),
+    coverImage: image().optional(),
+    gallery: z.array(image()).default([]),
+    draft: z.boolean().default(false),
+  });
+
+const movies = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/movies' }),
+  schema: mediaNoteSchema,
+});
+
+const books = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/books' }),
+  schema: mediaNoteSchema,
+});
+
+const albums = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/albums' }),
+  schema: mediaNoteSchema,
+});
+
+export const collections = { posts, recommendations, goals, goalLogs, movies, books, albums };

@@ -1,0 +1,26 @@
+---
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import MediaIndex from '../../components/shared/MediaIndex.astro';
+import { getMediaLibrary } from '../../lib/media';
+import { PROFILES } from '../../data/profiles';
+
+const { albums } = await getMediaLibrary();
+const withNotes = albums.filter((a) => a.entry).length;
+---
+
+<DocumentLayout
+  title="Albums"
+  kicker="most played"
+  description="My most-played albums of all time, from Last.fm."
+  statusLeft={`${albums.length} albums`}
+  statusRight={withNotes ? `${withNotes} with notes` : undefined}
+>
+  <p>
+    My most-played records of all time, counted by
+    <a href={PROFILES.lastfm.url} target="_blank" rel="noopener noreferrer">Last.fm</a>.
+    There are no ratings here — Last.fm only counts plays — so an album gets its own page
+    once I've actually written something about it.
+  </p>
+
+  <MediaIndex items={albums} kind="album" />
+</DocumentLayout>

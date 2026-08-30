@@ -2,22 +2,51 @@
 import DocumentLayout from '../layouts/DocumentLayout.astro';
 import { withBase } from '../lib/url';
 import { BADGES } from '../data/badges';
+import { PROFILES } from '../data/profiles';
 ---
 
 <DocumentLayout title="Links" kicker="Blogroll">
   <p>Places elsewhere on the internet, and some badges to prove it.</p>
 
+  <p class="links-heading">The three feeds this site reads</p>
   <ul class="links-list">
     <li>
-      <a href="https://github.com/devon-23" target="_blank" rel="noopener noreferrer">github.com/devon-23</a> — where the code for this site (and everything else) lives.
+      <a href={PROFILES.lastfm.url} target="_blank" rel="noopener noreferrer">last.fm/user/{PROFILES.lastfm.user}</a>
+      — every song, live. Powers the Music window and the Now Playing gadget.
     </li>
     <li>
-      <a href="https://www.last.fm/user/devonbarks" target="_blank" rel="noopener noreferrer">last.fm/user/devonbarks</a> — the account the Music window is actually reading from.
+      <a href={PROFILES.letterboxd.url} target="_blank" rel="noopener noreferrer">letterboxd.com/{PROFILES.letterboxd.user}</a>
+      — the film diary. Baked into <a href={withBase('/currently/')}>Currently</a> at build time.
+    </li>
+    <li>
+      <a href={PROFILES.goodreads.url} target="_blank" rel="noopener noreferrer">goodreads.com</a>
+      — what I'm reading and what I've finished, same deal.
+    </li>
+  </ul>
+
+  <p class="links-heading">Elsewhere</p>
+  <ul class="links-list">
+    <li>
+      <a href={PROFILES.github.url} target="_blank" rel="noopener noreferrer">github.com/{PROFILES.github.user}</a> — where the code for this site (and everything else) lives.
     </li>
     <li>
       <a href="https://github.com/devon-23/Spinning" target="_blank" rel="noopener noreferrer">Spinning</a> — the original Last.fm project this site's Music window was built from.
     </li>
+    <li>
+      <a href="https://github.com/devon-23/nowPlaying" target="_blank" rel="noopener noreferrer">nowPlaying</a> — the scrobble widget the desktop gadget is a port of.
+    </li>
   </ul>
+
+  <div class="webring">
+    <span class="webring-label">◄ the personal site webring ►</span>
+    <p>
+      No ring joined yet — this is the slot for one. Find a ring you like
+      (<a href="https://webring.xxiivv.com/" target="_blank" rel="noopener noreferrer">XXIIVV</a> and
+      <a href="https://hotlinewebring.club/" target="_blank" rel="noopener noreferrer">Hotline</a> are both alive),
+      then swap the prev/random/next links in below.
+    </p>
+    <span class="webring-nav">‹ prev · random · next ›</span>
+  </div>
 
   <p class="badge-heading">Badges</p>
   <div class="badge-strip">
@@ -45,6 +74,38 @@ import { BADGES } from '../data/badges';
   .links-list li {
     padding: 6px 0;
     border-bottom: 1px solid #e0e0e0;
+  }
+
+  .links-heading {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #7a2f6b;
+    margin: 22px 0 4px;
+  }
+
+  .webring {
+    margin: 24px 0;
+    padding: 12px 14px;
+    text-align: center;
+    border: 2px ridge #ff66cc;
+    background: linear-gradient(180deg, #fff, #f4f0fa);
+  }
+
+  .webring-label,
+  .webring-nav {
+    display: block;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    color: #7a2f6b;
+    letter-spacing: 0.04em;
+  }
+
+  .webring p {
+    font-size: 12px;
+    color: #555;
+    margin: 8px 0;
   }
 
   .badge-heading {

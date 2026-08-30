@@ -14,7 +14,10 @@
     "new:post": "node scripts/new-post.mjs",
     "new:recommendation": "node --experimental-strip-types scripts/new-recommendation.mjs",
     "new:month": "node --experimental-strip-types scripts/new-month.mjs",
-    "log:goal": "node scripts/log-goal.mjs"
+    "log:goal": "node scripts/log-goal.mjs",
+    "new:movie": "node --experimental-strip-types scripts/new-media-note.mjs movie",
+    "new:book": "node --experimental-strip-types scripts/new-media-note.mjs book",
+    "new:album": "node --experimental-strip-types scripts/new-media-note.mjs album"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",

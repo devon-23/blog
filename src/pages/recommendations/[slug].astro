@@ -5,6 +5,7 @@ import LinkPreviewCard from '../../components/shared/LinkPreviewCard.astro';
 import { formatDate } from '../../lib/format';
 import { CATEGORY_META } from '../../data/categories';
 import { getLinkPreview } from '../../lib/linkPreview';
+import { getMediaForRecommendation } from '../../lib/media';
 
 export async function getStaticPaths() {
   const recs = await getCollection('recommendations', ({ data }) => !data.draft);
@@ -18,6 +19,11 @@ const { rec } = Astro.props;
 const { Content } = await render(rec);
 const categoryMeta = CATEGORY_META[rec.data.category];
 const linkPreview = rec.data.link ? await getLinkPreview(rec.data.link) : null;
+
+// If this recommendation's `link` points at a Letterboxd film or Goodreads
+// book we already have a page for, surface that page — no extra frontmatter
+// needed, the existing link is the join.
+const media = await getMediaForRecommendation(rec);
 ---
 
 <DocumentLayout
@@ -30,5 +36,76 @@ const linkPreview = rec.data.link ? await getLinkPreview(rec.data.link) : null;
   gallery={rec.data.gallery}
 >
   <Content />
+
+  {
+    media && (
+      <a class="rec-media-link" href={media.href}>
+        {media.coverUrl && <img src={media.coverUrl} alt="" loading="lazy" />}
+        <span>
+          <span class="rec-media-kind">My full {media.kind === 'book' ? 'reading' : 'watch'} log</span>
+          <span class="rec-media-title">
+            {media.title}
+            {media.rating != null && <span class="rec-media-stars"> {'★'.repeat(Math.floor(media.rating))}{media.rating % 1 >= 0.5 ? '½' : ''}</span>}
+          </span>
+          <span class="rec-media-hint">Rating, the review I wrote at the time, and every rewatch &rarr;</span>
+        </span>
+      </a>
+    )
+  }
+
   {linkPreview && <LinkPreviewCard preview={linkPreview} />}
 </DocumentLayout>
+
+<style>
+  .rec-media-link {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 18px 0;
+    padding: 10px;
+    border: 2px ridge #ff66cc;
+    background: linear-gradient(180deg, #fff, #f4f0fa);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .rec-media-link:hover {
+    background: linear-gradient(180deg, #fff, #ffe9f7);
+  }
+
+  .rec-media-link img {
+    width: 54px;
+    border: 1px solid #888;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .rec-media-link > span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .rec-media-kind {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #7a2f6b;
+  }
+
+  .rec-media-title {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .rec-media-stars {
+    color: #d38f00;
+  }
+
+  .rec-media-hint {
+    font-size: 11px;
+    color: #666;
+  }
+</style>

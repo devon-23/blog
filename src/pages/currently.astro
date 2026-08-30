@@ -1,0 +1,224 @@
+---
+import DocumentLayout from '../layouts/DocumentLayout.astro';
+import { getMediaDiet } from '../lib/mediaDiet';
+import { PROFILES } from '../data/profiles';
+import { withBase } from '../lib/url';
+
+// The static twin of the Currently window. Same Letterboxd/Goodreads data,
+// rendered as plain HTML so it's crawlable, Pagefind-indexable, and readable
+// with JavaScript off. The live Last.fm track only exists in the desktop
+// version — this page links out instead of faking it.
+
+const { films, finishedBooks, readingNow } = await getMediaDiet();
+
+function stars(rating: number): string {
+  const full = Math.floor(rating);
+  return '★'.repeat(full) + (rating - full >= 0.5 ? '½' : '');
+}
+
+const lastFilm = films[0];
+const reading = readingNow[0];
+const lastBook = finishedBooks[0];
+const feature = reading ?? lastBook;
+---
+
+<DocumentLayout
+  title="Currently"
+  kicker="what I'm into"
+  description="The last film I watched, the book I'm reading, and what I'm listening to — pulled from Letterboxd, Goodreads and Last.fm."
+  statusLeft="Letterboxd + Goodreads + Last.fm"
+  statusRight="rebuilt on every deploy"
+>
+  <p>
+    Three accounts do a better job of describing me than any bio would. This page is rebuilt
+    from their feeds every time the site deploys — the
+    <a href={withBase('/')}>desktop version</a> adds a live now-playing readout on top.
+    The full archives live in <a href={withBase('/movies/')}>Movies</a>,
+    <a href={withBase('/books/')}>Books</a> and <a href={withBase('/albums/')}>Albums</a>.
+  </p>
+
+  {
+    lastFilm && (
+      <section class="cur-block">
+        <h2>Last film</h2>
+        <a class="cur-item" href={lastFilm.href ?? lastFilm.externalUrl}>
+          {lastFilm.coverUrl && <img src={lastFilm.coverUrl} alt="" width="80" loading="lazy" />}
+          <span class="cur-item-text">
+            <strong>
+              {lastFilm.title}
+              {lastFilm.subtitle && <span class="cur-dim"> ({lastFilm.subtitle})</span>}
+            </strong>
+            {lastFilm.rating != null && <span class="cur-stars">{stars(lastFilm.rating)}</span>}
+            <span class="cur-dim">
+              {[lastFilm.dateLabel && `watched ${lastFilm.dateLabel}`, lastFilm.meta].filter(Boolean).join(' · ')}
+            </span>
+            {lastFilm.review && <span class="cur-review">{lastFilm.review}</span>}
+          </span>
+        </a>
+      </section>
+    )
+  }
+
+  {
+    feature && (
+      <section class="cur-block">
+        <h2>{reading ? 'Reading now' : 'Last book'}</h2>
+        <a class="cur-item" href={feature.href ?? feature.externalUrl}>
+          {feature.coverUrl && <img src={feature.coverUrl} alt="" width="80" loading="lazy" />}
+          <span class="cur-item-text">
+            <strong>{feature.title}</strong>
+            <span class="cur-dim">{feature.subtitle}</span>
+            {feature.rating != null && <span class="cur-stars">{stars(feature.rating)}</span>}
+            {feature.dateLabel && <span class="cur-dim">{feature.dateLabel}</span>}
+            {feature.review && <span class="cur-review">{feature.review}</span>}
+          </span>
+        </a>
+      </section>
+    )
+  }
+
+  {
+    films.length > 1 && (
+      <section class="cur-block">
+        <h2>Recently watched</h2>
+        <ul class="cur-strip">
+          {films.slice(0, 8).map((film) => (
+            <li>
+              <a href={film.href ?? film.externalUrl} title={film.title}>
+                {film.coverUrl && <img src={film.coverUrl} alt={film.title} loading="lazy" />}
+                <span>{film.rating != null ? stars(film.rating) : film.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p><a href={withBase('/movies/')}>All films &rarr;</a></p>
+      </section>
+    )
+  }
+
+  {
+    finishedBooks.length > 0 && (
+      <section class="cur-block">
+        <h2>Recently read</h2>
+        <ul class="cur-strip">
+          {finishedBooks.slice(0, 8).map((book) => (
+            <li>
+              <a href={book.href ?? book.externalUrl} title={`${book.title} — ${book.subtitle ?? ''}`}>
+                {book.coverUrl && <img src={book.coverUrl} alt={book.title} loading="lazy" />}
+                <span>{book.rating != null ? stars(book.rating) : book.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p><a href={withBase('/books/')}>All books &rarr;</a></p>
+      </section>
+    )
+  }
+
+  <section class="cur-block">
+    <h2>The sources</h2>
+    <ul>
+      <li><a href={PROFILES.lastfm.url} target="_blank" rel="noopener noreferrer">Last.fm</a> — every play, live</li>
+      <li><a href={PROFILES.letterboxd.url} target="_blank" rel="noopener noreferrer">Letterboxd</a> — the film diary</li>
+      <li><a href={PROFILES.goodreads.url} target="_blank" rel="noopener noreferrer">Goodreads</a> — the reading log</li>
+    </ul>
+  </section>
+</DocumentLayout>
+
+<style>
+  .cur-block {
+    margin: 0 0 28px;
+  }
+
+  .cur-block h2 {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7a2f6b;
+    border-bottom: 2px solid #ff66cc;
+    padding-bottom: 4px;
+    margin: 0 0 12px;
+  }
+
+  .cur-item {
+    display: flex;
+    gap: 14px;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+    border: 1px solid #c9c9c9;
+    background: linear-gradient(180deg, #fff, #f4f0fa);
+  }
+
+  .cur-item:hover {
+    background: linear-gradient(180deg, #fff, #ffe9f7);
+    border-color: #ff66cc;
+  }
+
+  .cur-item img {
+    align-self: flex-start;
+    border: 1px solid #888;
+    display: block;
+  }
+
+  .cur-item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .cur-item-text strong {
+    font-size: 15px;
+  }
+
+  .cur-dim {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .cur-stars {
+    color: #d38f00;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+
+  .cur-review {
+    font-size: 13px;
+    color: #333;
+    margin-top: 4px;
+    white-space: pre-line;
+  }
+
+  .cur-strip {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+    padding: 0;
+  }
+
+  .cur-strip a {
+    display: block;
+    width: 78px;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .cur-strip img {
+    width: 78px;
+    height: 116px;
+    object-fit: cover;
+    border: 1px solid #888;
+    display: block;
+  }
+
+  .cur-strip span {
+    display: block;
+    font-size: 11px;
+    color: #d38f00;
+    margin-top: 2px;
+  }
+</style>

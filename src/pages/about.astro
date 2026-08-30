@@ -1,17 +1,70 @@
 ---
 import DocumentLayout from '../layouts/DocumentLayout.astro';
+import { PROFILE } from '../data/profiles';
+import { withBase } from '../lib/url';
 ---
 
 <DocumentLayout title="About" kicker="devon.txt">
-  <p>
-    Hi, I'm Devon. This is my desktop — a running log of what I'm reading, cooking, listening
-    to, thinking about, and planning next. <em>(Placeholder bio — edit
-    <code>src/pages/about.astro</code> and <code>src/components/apps/AboutApp.tsx</code> to
-    make this actually about you.)</em>
-  </p>
+  {PROFILE.blurb.map((line) => <p>{line}</p>)}
+
   <p>
     Everything on this site is append-only: articles and think pieces in their own folders,
     recommendations grouped by category, a live look at what I'm listening to, and a monthly
     recap of everything that got added, going back to the start.
   </p>
+
+  <h2>Interests</h2>
+  <dl class="about-interests">
+    {
+      PROFILE.interests.map((row) => (
+        <>
+          <dt>{row.label}</dt>
+          <dd>{row.value}</dd>
+        </>
+      ))
+    }
+  </dl>
+
+  <h2>Where the data comes from</h2>
+  <p>
+    <a href={withBase('/currently/')}>Currently</a> reads three accounts directly: Last.fm for music
+    (live, in your browser), Letterboxd for films and Goodreads for books (both baked in when the
+    site builds). None of it is hand-maintained, so it's accurate right up until I stop logging things.
+  </p>
+
+  <p class="about-mood">
+    Current mood: {PROFILE.moodEmoji} {PROFILE.mood} · {PROFILE.location}
+  </p>
 </DocumentLayout>
+
+<style>
+  .about-interests {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 16px;
+    margin: 0 0 20px;
+    font-size: 13px;
+  }
+
+  .about-interests dt {
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #7a2f6b;
+    padding-top: 2px;
+  }
+
+  .about-interests dd {
+    margin: 0;
+  }
+
+  .about-mood {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+    font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    color: #666;
+  }
+</style>

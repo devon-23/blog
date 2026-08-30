@@ -1,0 +1,37 @@
+---
+import { render } from 'astro:content';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
+import MediaDetail from '../../components/shared/MediaDetail.astro';
+import { getMediaLibrary } from '../../lib/media';
+import { formatDate } from '../../lib/format';
+
+// One page per book. Only items with `hasPage` get a route — see the
+// `hasPage` rules in lib/media.ts for why (no dead-end pages).
+export async function getStaticPaths() {
+  const library = await getMediaLibrary();
+  return library.books
+    .filter((item) => item.hasPage)
+    .map((item) => ({ params: { slug: item.slug }, props: { item } }));
+}
+
+const { item } = Astro.props;
+
+// The overlay note is Markdown, so it has to be rendered through the content
+// pipeline; `Content` is null when nothing has been written for this item yet.
+const rendered = item.entry ? await render(item.entry) : null;
+const Content = rendered?.Content ?? null;
+---
+
+<DocumentLayout
+  title={item.title}
+  kicker="Book"
+  description={item.review ?? item.description}
+  coverImage={item.entry?.data.coverImage}
+  gallery={item.entry?.data.gallery ?? []}
+  statusLeft={item.externalLabel}
+  statusRight={item.date ? formatDate(item.date) : undefined}
+>
+  <MediaDetail item={item} hasBody={Boolean(Content)}>
+    {Content && <Content />}
+  </MediaDetail>
+</DocumentLayout>

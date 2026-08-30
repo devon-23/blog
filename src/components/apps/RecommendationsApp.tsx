@@ -1,10 +1,13 @@
 import type { DesktopRecommendation } from '../desktop/types';
+import { useOpenDocument } from '../desktop/openDocument';
 
 interface Props {
   recommendations: DesktopRecommendation[];
 }
 
 export default function RecommendationsApp({ recommendations }: Props) {
+  const openDocument = useOpenDocument();
+
   if (recommendations.length === 0) {
     return <p className="app-empty">Nothing recommended yet.</p>;
   }
@@ -23,10 +26,13 @@ export default function RecommendationsApp({ recommendations }: Props) {
             <ul className="app-list">
               {items.map((rec) => (
                 <li key={rec.slug}>
-                  <a href={rec.href}>
+                  <a href={rec.href} onClick={(e) => openDocument(rec.href, rec.title, e)}>
                     {rec.coverImageSrc && <img className="app-list-thumb" src={rec.coverImageSrc} alt="" />}
                     <span className="app-list-body">
-                      <span className="app-list-title">{rec.title}</span>
+                      <span className="app-list-title">
+                        {rec.title}
+                        {rec.isNew && <span className="new-tag">NEW!</span>}
+                      </span>
                       {rec.summary && <span className="app-list-summary">{rec.summary}</span>}
                       <span className="app-list-date">
                         {rec.rating ? '★'.repeat(rec.rating) + ' · ' : ''}
