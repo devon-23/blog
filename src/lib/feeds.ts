@@ -200,6 +200,28 @@ function readExportCsv(filename: string): Record<string, string>[] {
   }
 }
 
+/**
+ * Film slugs from a Letterboxd list export (`src/data/exports/lists/<slug>.csv`),
+ * in the list's own rank order — that's just row order in the file, which is
+ * how Letterboxd's export already writes it, so no rank column is required.
+ * List RSS is behind a Cloudflare challenge a build-time fetch can't pass, so
+ * this export is the only source for list data. Returns [] when the file
+ * isn't there, same as any other export.
+ */
+export function getRankedListSlugs(slug: string): string[] {
+  try {
+    const dir = join(EXPORTS_DIR, 'lists');
+    if (!existsSync(dir)) return [];
+    const target = readdirSync(dir).find((f) => f.toLowerCase() === `${slug.toLowerCase()}.csv`);
+    if (!target) return [];
+    return parseCsv(readFileSync(join(dir, target), 'utf-8'))
+      .map((row) => filmSlugFromUrl(row['Letterboxd URI'] || ''))
+      .filter((s): s is string => Boolean(s));
+  } catch {
+    return [];
+  }
+}
+
 // --- Letterboxd ------------------------------------------------------------
 
 /** One diary entry — a single watch. A rewatched film has several. */

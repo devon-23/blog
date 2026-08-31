@@ -19,6 +19,13 @@ export const PROFILES = {
     user: 'devonbarks',
     url: 'https://letterboxd.com/devonbarks/',
     rss: 'https://letterboxd.com/devonbarks/rss/',
+    // List and watchlist RSS sit behind a Cloudflare bot challenge that a
+    // build-time fetch can't pass (the diary RSS above is exempt), so ranked
+    // lists come from the export CSV in src/data/exports/lists/ instead — see
+    // getRankedListSlugs() in lib/feeds.ts.
+    lists: {
+      ranked2026: { slug: '2026-ranked', title: '2026 Ranked', url: 'https://letterboxd.com/devonbarks/list/2026-ranked/' },
+    },
   },
   goodreads: {
     userId: '46321023',
@@ -55,7 +62,7 @@ export const PROFILE = {
   status: 'online',
 
   blurb: [
-    "Hi, I'm Devon. This is my desktop — a running log of what I'm reading, cooking, listening to, thinking about, and planning next.",
+    "Hi, I'm Devonnn. This is my desktop — a running log of what I'm reading, cooking, listening to, thinking about, and planning next.",
     'Everything here is append-only. Nothing gets deleted, only added to, which means the bad takes stay up right next to the good ones.',
   ],
 

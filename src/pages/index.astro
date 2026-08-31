@@ -9,6 +9,8 @@ import { CATEGORY_META } from '../data/categories';
 import { getAllGalleryImages } from '../lib/gallery';
 import { getMediaDiet } from '../lib/mediaDiet';
 import { getMediaLibrary, type MediaItem } from '../lib/media';
+import { getRankedListSlugs } from '../lib/feeds';
+import { PROFILES } from '../data/profiles';
 import type { DesktopData, DesktopMediaItem } from '../components/desktop/types';
 
 const [posts, recommendations, monthKeys, goalEntries, galleryImages, mediaDiet, library] = await Promise.all([
@@ -40,6 +42,17 @@ function toDesktopMedia(item: MediaItem): DesktopMediaItem {
     hasNote: Boolean(item.entry),
   };
 }
+
+// Ranked list order, from the export CSV (list RSS is blocked by a Cloudflare
+// challenge — see getRankedListSlugs()). Only films that already have a diary
+// watch show up, since the CSV carries no poster art of its own.
+const moviesBySlug = new Map(library.movies.map((item) => [item.slug, item]));
+const rankedMovies: DesktopMediaItem[] = getRankedListSlugs(PROFILES.letterboxd.lists.ranked2026.slug)
+  .map((slug, i): DesktopMediaItem | null => {
+    const item = moviesBySlug.get(slug);
+    return item ? { ...toDesktopMedia(item), rank: i + 1 } : null;
+  })
+  .filter((item): item is DesktopMediaItem => item !== null);
 
 const goalsByMonth = new Map(goalEntries.map((g) => [g.data.month, g]));
 
@@ -111,6 +124,7 @@ const desktopData: DesktopData = {
   movies: library.movies.map(toDesktopMedia),
   books: library.books.map(toDesktopMedia),
   albums: library.albums.map(toDesktopMedia),
+  rankedMovies,
 };
 ---
 

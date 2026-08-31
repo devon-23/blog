@@ -76,6 +76,8 @@ export interface DesktopMediaItem {
   dateLabel?: string;
   meta?: string;
   playcount?: number;
+  /** Position in a curated list (the "2026 Ranked" app), 1-based. */
+  rank?: number;
   externalUrl: string;
   /** Internal page href, or undefined when this item has no page of its own. */
   href?: string;
@@ -92,4 +94,6 @@ export interface DesktopData {
   movies: DesktopMediaItem[];
   books: DesktopMediaItem[];
   albums: DesktopMediaItem[];
+  /** The "2026 Ranked" list, in rank order. Empty until the export CSV exists. */
+  rankedMovies: DesktopMediaItem[];
 }

@@ -16,12 +16,14 @@ import SearchApp from '../apps/SearchApp';
 import LinksApp from '../apps/LinksApp';
 import CurrentlyApp from '../apps/CurrentlyApp';
 import MediaListApp from '../apps/MediaListApp';
+import RankedListApp from '../apps/RankedListApp';
 import DocumentWindowApp from '../apps/DocumentWindowApp';
 import ProfileApp from '../apps/ProfileApp';
 import GuestbookApp from '../apps/GuestbookApp';
 import MusicApp from '../music/MusicApp';
 import { withBase } from '../../lib/url';
 import { BADGES } from '../../data/badges';
+import { PROFILES } from '../../data/profiles';
 
 interface Props {
   data: DesktopData;
@@ -98,6 +100,8 @@ export default function Desktop({ data }: Props) {
         return <MediaListApp items={data.books} kind="book" indexHref={withBase('/books/')} />;
       case 'albums':
         return <MediaListApp items={data.albums} kind="album" indexHref={withBase('/albums/')} />;
+      case 'ranked':
+        return <RankedListApp items={data.rankedMovies} listUrl={PROFILES.letterboxd.lists.ranked2026.url} />;
       case 'music':
         return <MusicApp />;
       case 'articles':
