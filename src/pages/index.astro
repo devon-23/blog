@@ -47,7 +47,8 @@ function toDesktopMedia(item: MediaItem): DesktopMediaItem {
 // challenge — see getRankedListSlugs()). Only films that already have a diary
 // watch show up, since the CSV carries no poster art of its own.
 const moviesBySlug = new Map(library.movies.map((item) => [item.slug, item]));
-const rankedMovies: DesktopMediaItem[] = getRankedListSlugs(PROFILES.letterboxd.lists.ranked2026.slug)
+const rankedListSlugs = await getRankedListSlugs(PROFILES.letterboxd.lists.ranked2026.slug);
+const rankedMovies: DesktopMediaItem[] = rankedListSlugs
   .map((slug, i): DesktopMediaItem | null => {
     const item = moviesBySlug.get(slug);
     return item ? { ...toDesktopMedia(item), rank: i + 1 } : null;

@@ -66,6 +66,25 @@ function writeCache<T>(key: string, value: T) {
   }
 }
 
+/**
+ * Runs `fn` over `items` with at most `limit` in flight at once. Firing a full
+ * export's worth of boxd.it redirect lookups (900+ URLs) as one Promise.all
+ * gets Cloudflare to answer nearly all of them with 429 — throttling keeps
+ * every request under the rate limit instead.
+ */
+async function mapWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
 async function fetchText(url: string): Promise<string> {
   const res = await fetch(url, {
     headers: { 'User-Agent': UA },
@@ -201,6 +220,61 @@ function readExportCsv(filename: string): Record<string, string>[] {
 }
 
 /**
+ * A list export isn't a plain CSV of films — it opens with a few metadata
+ * lines (export version, then a Date/Name/Tags/URL/Description row for the
+ * list itself) before the blank line and the real per-film header
+ * (`Position,Name,Year,URL,Description`). Skip down to that header so the
+ * rest can be parsed as normal CSV.
+ */
+function filmSectionOf(raw: string): string {
+  const body = raw.replace(/^﻿/, '').replace(/\r\n/g, '\n');
+  const lines = body.split('\n');
+  const headerIndex = lines.findIndex((line) => line.startsWith('Position,'));
+  return headerIndex === -1 ? body : lines.slice(headerIndex).join('\n');
+}
+
+/**
+ * Letterboxd's exports (list exports, and diary/ratings/watched/reviews)
+ * link films via shortened `boxd.it/xxxx` URLs rather than the full
+ * `/film/<slug>/` page, so the real slug has to be resolved by following the
+ * redirect. Cached to disk since a short link's target never changes.
+ *
+ * A full export resolves 900+ of these short links in one build, which is
+ * enough to trip boxd.it's Cloudflare rate limit (HTTP 429) even throttled to
+ * a handful in flight at once — so a 429 gets a couple of backed-off retries
+ * before giving up. A give-up is never cached (only a real slug is), so the
+ * next build just tries again instead of being stuck on a stale null.
+ */
+async function resolveFilmSlug(url: string): Promise<string | null> {
+  const direct = filmSlugFromUrl(url);
+  if (direct) return direct;
+  if (!url) return null;
+
+  const cacheKey = `boxd-redirect:${url}`;
+  const cached = readCache<string | null>(cacheKey);
+  if (cached !== null) return cached;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': UA },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
+      if (res.status === 429) {
+        await new Promise((resolve) => setTimeout(resolve, 750 * 2 ** attempt));
+        continue;
+      }
+      const slug = filmSlugFromUrl(res.url);
+      writeCache(cacheKey, slug);
+      return slug;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
  * Film slugs from a Letterboxd list export (`src/data/exports/lists/<slug>.csv`),
  * in the list's own rank order — that's just row order in the file, which is
  * how Letterboxd's export already writes it, so no rank column is required.
@@ -208,15 +282,17 @@ function readExportCsv(filename: string): Record<string, string>[] {
  * this export is the only source for list data. Returns [] when the file
  * isn't there, same as any other export.
  */
-export function getRankedListSlugs(slug: string): string[] {
+export async function getRankedListSlugs(slug: string): Promise<string[]> {
   try {
     const dir = join(EXPORTS_DIR, 'lists');
     if (!existsSync(dir)) return [];
     const target = readdirSync(dir).find((f) => f.toLowerCase() === `${slug.toLowerCase()}.csv`);
     if (!target) return [];
-    return parseCsv(readFileSync(join(dir, target), 'utf-8'))
-      .map((row) => filmSlugFromUrl(row['Letterboxd URI'] || ''))
-      .filter((s): s is string => Boolean(s));
+    const urls = parseCsv(filmSectionOf(readFileSync(join(dir, target), 'utf-8')))
+      .map((row) => row['URL'] || '')
+      .filter(Boolean);
+    const slugs = await mapWithConcurrency(urls, 10, resolveFilmSlug);
+    return slugs.filter((s): s is string => Boolean(s));
   } catch {
     return [];
   }
@@ -312,39 +388,49 @@ async function letterboxdFromRss(): Promise<RawWatch[]> {
  * `watched.csv` are thinner fallbacks for films missing from the other two.
  * Exports have no poster art — those films show a text placeholder until the
  * film reappears in the RSS window.
+ *
+ * Like list exports, these link films via `boxd.it` short URLs rather than
+ * `/film/<slug>/` — resolved through the same redirect-following, disk-cached
+ * resolveFilmSlug(). URIs are deduped first since the same short link repeats
+ * across files (and across every diary/rating/watched row for a film that was
+ * never rewatched).
  */
-function letterboxdFromExports(): RawWatch[] {
-  const rows: RawWatch[] = [];
+async function letterboxdFromExports(): Promise<RawWatch[]> {
+  const rows: { row: Record<string, string>; review?: string }[] = [
+    ...readExportCsv('reviews.csv').map((row) => ({ row, review: row.Review })),
+    ...readExportCsv('diary.csv').map((row) => ({ row })),
+    ...readExportCsv('ratings.csv').map((row) => ({ row })),
+    ...readExportCsv('watched.csv').map((row) => ({ row })),
+  ];
 
-  const push = (row: Record<string, string>, review?: string) => {
-    const uri = row['Letterboxd URI'] || '';
-    const slug = filmSlugFromUrl(uri);
-    const title = row.Name;
-    if (!slug || !title) return;
-    const ratingRaw = Number(row.Rating);
-    rows.push({
-      slug,
-      title,
-      year: row.Year || undefined,
-      rating: Number.isFinite(ratingRaw) && ratingRaw > 0 ? ratingRaw : undefined,
-      review: review || undefined,
-      watchedDate: row['Watched Date'] || row.Date || undefined,
-      rewatch: row.Rewatch === 'Yes',
-      url: uri,
-    });
-  };
+  const uris = [...new Set(rows.map(({ row }) => row['Letterboxd URI'] || '').filter(Boolean))];
+  const resolved = await mapWithConcurrency(uris, 10, async (uri) => [uri, await resolveFilmSlug(uri)] as const);
+  const slugByUri = new Map(resolved);
 
-  for (const row of readExportCsv('reviews.csv')) push(row, row.Review);
-  for (const row of readExportCsv('diary.csv')) push(row);
-  for (const row of readExportCsv('ratings.csv')) push(row);
-  for (const row of readExportCsv('watched.csv')) push(row);
-
-  return rows;
+  return rows
+    .map(({ row, review }): RawWatch | null => {
+      const uri = row['Letterboxd URI'] || '';
+      const slug = slugByUri.get(uri) ?? null;
+      const title = row.Name;
+      if (!slug || !title) return null;
+      const ratingRaw = Number(row.Rating);
+      return {
+        slug,
+        title,
+        year: row.Year || undefined,
+        rating: Number.isFinite(ratingRaw) && ratingRaw > 0 ? ratingRaw : undefined,
+        review: review || undefined,
+        watchedDate: row['Watched Date'] || row.Date || undefined,
+        rewatch: row.Rewatch === 'Yes',
+        url: uri,
+      };
+    })
+    .filter((w): w is RawWatch => w !== null);
 }
 
 /** Every film, grouped by slug with all its watches, newest watch first. */
 export async function getFilms(): Promise<Film[]> {
-  const [rss, exported] = [await letterboxdFromRss(), letterboxdFromExports()];
+  const [rss, exported] = await Promise.all([letterboxdFromRss(), letterboxdFromExports()]);
 
   const byFilm = new Map<string, Film>();
   // RSS first so its poster/metadata wins; exports then fill in the history.
